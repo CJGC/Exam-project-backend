@@ -1,8 +1,9 @@
-import {OnInit } from '@angular/core';
+import { OnInit, Directive } from '@angular/core';
 import { ProfessorDto } from './ProfessorDto';
 import { QuestionDto } from './abstractDto/QuestionDto';
 import { ExamStudentDto } from './ExamStudentDto';
 
+@Directive()
 export class ExamDto implements OnInit {
 
     public id : number;

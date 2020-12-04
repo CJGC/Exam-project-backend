@@ -1,6 +1,7 @@
-import {OnInit } from '@angular/core';
+import { OnInit, Directive } from '@angular/core';
 import { ExamDto } from './ExamDto';
 
+@Directive()
 export class ProfessorDto implements OnInit {
     public id : number;
     public identificationCard : String;
