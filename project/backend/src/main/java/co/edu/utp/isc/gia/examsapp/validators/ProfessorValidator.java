@@ -5,7 +5,7 @@
  */
 package co.edu.utp.isc.gia.examsapp.validators;
 
-import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
+//import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.ProfessorDto;
 import java.util.regex.Pattern;
 
@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
  */
 public class ProfessorValidator {
     private ProfessorDto professor;
-    private final ExamValidator examValidator;
+//    private final ExamValidator examValidator;
     
-    public ProfessorValidator() {
+/*    public ProfessorValidator() {
         this.examValidator = new ExamValidator();
     }
-    
+ */   
     public ProfessorDto getProfessor() {
         return professor;
     }
@@ -88,7 +88,8 @@ public class ProfessorValidator {
                 this.professor.getPassword()))
             throw new Exception ("Professor's password is invalid");
     }
-    
+
+/*    
     public void validateExams() throws Exception {
         if (this.professor.getExams()== null) return;
         for (ExamDto ex : this.professor.getExams()) {
@@ -96,7 +97,7 @@ public class ProfessorValidator {
             this.examValidator.performValidationsExcept("id");
         }
     }
-    
+ */
     public void performValidationsExcept(String attribute) throws Exception {
         this.isNull();
         if (!attribute.equals("id")) this.validateId();
@@ -106,7 +107,7 @@ public class ProfessorValidator {
         if (!attribute.equals("email")) this.validateEmail();
         if (!attribute.equals("username")) this.validateUsername();
         if (!attribute.equals("password")) this.validatePassword();
-        if (!attribute.equals("exams")) this.validateExams();
+        //if (!attribute.equals("exams")) this.validateExams();
     }
     
     public void performValidations() throws Exception {
@@ -118,6 +119,6 @@ public class ProfessorValidator {
         this.validateEmail();
         this.validateUsername();
         this.validatePassword();
-        this.validateExams();
+        //this.validateExams();
     }
 }
