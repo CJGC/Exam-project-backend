@@ -5,6 +5,7 @@
  */
 package co.edu.utp.isc.gia.examsapp.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
@@ -47,13 +48,15 @@ public class Question implements Serializable  {
     private String description;
     private File questionImage;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
     private Exam exam;
     
+    @JsonIgnore
     @OneToMany(mappedBy="question", cascade=CascadeType.ALL)
     private List<AnswerOption> answerOption;
 
+    @JsonIgnore
     @OneToMany(mappedBy="question", cascade=CascadeType.ALL)
     private List<OpenResponse> openResponse;
 }
