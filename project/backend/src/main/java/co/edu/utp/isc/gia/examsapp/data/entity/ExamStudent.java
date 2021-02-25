@@ -5,6 +5,7 @@
  */
 package co.edu.utp.isc.gia.examsapp.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -43,6 +44,7 @@ public class ExamStudent implements Serializable  {
     @Column(precision=16, scale=2)
     private Double definitiveGrade;
     
+    @JsonIgnore
     @OneToMany(mappedBy="examStudent", cascade=CascadeType.ALL)
     private List<OpenResponse> openResponses;
     
