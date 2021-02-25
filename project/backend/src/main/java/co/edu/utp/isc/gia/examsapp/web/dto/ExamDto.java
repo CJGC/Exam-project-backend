@@ -26,8 +26,6 @@ public class ExamDto implements Serializable {
     private String link;
     private Double maxGrade;
     private String description;
-    private Integer examtime;
+    private Integer durability;
     private ProfessorDto professor;
-    private List<QuestionDto> questions;
-    private List<ExamStudentDto> examStudents;
 }
