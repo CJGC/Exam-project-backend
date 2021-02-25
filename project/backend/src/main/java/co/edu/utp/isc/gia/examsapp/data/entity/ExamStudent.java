@@ -46,11 +46,11 @@ public class ExamStudent implements Serializable  {
     @OneToMany(mappedBy="examStudent", cascade=CascadeType.ALL)
     private List<OpenResponse> openResponses;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
     private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
     private Exam exam;
     
