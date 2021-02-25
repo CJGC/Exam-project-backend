@@ -38,11 +38,11 @@ public class SelectedResponse implements Serializable  {
     private Long id;
     private Double valoration;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
     private ExamStudent examStudent;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
     private AnswerOption answerOption;
 }
