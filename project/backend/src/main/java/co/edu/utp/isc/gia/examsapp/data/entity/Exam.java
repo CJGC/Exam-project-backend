@@ -42,12 +42,12 @@ public class Exam implements Serializable  {
     private String name;
     private String link;
     
-    @Column(precision=16, scale=2)
+    @Column(precision=3, scale=2)
     private Double maxGrade;
     private String description;
-    private Integer examtime;
+    private Integer durability;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
     private Professor professor;
 
