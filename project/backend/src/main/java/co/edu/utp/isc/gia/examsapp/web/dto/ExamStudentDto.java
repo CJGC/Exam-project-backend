@@ -22,7 +22,6 @@ public class ExamStudentDto implements Serializable {
     
     private Long id;
     private Double definitiveGrade;
-    private List<OpenResponseDto> openResponses;
     private StudentDto student;
     private ExamDto exam;
 }
