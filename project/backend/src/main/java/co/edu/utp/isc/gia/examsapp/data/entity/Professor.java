@@ -6,7 +6,6 @@
 package co.edu.utp.isc.gia.examsapp.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
