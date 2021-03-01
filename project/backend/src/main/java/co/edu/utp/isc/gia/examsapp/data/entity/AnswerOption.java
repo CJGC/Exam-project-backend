@@ -43,7 +43,7 @@ public class AnswerOption implements Serializable  {
     private String description;
     private Boolean correctAnswer;
     
-    @Column(precision=16, scale=2)
+    @Column(precision=3, scale=2)
     private Double weight;
     
     @OneToMany(mappedBy="answerOption", cascade=CascadeType.ALL)
