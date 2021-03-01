@@ -43,7 +43,7 @@ public class Question implements Serializable  {
     private Long id;
     private String questionType;
     
-    @Column(precision=16, scale=2)
+    @Column(precision=3, scale=2)
     private Double weight;
     private String description;
     private File questionImage;
