@@ -37,6 +37,16 @@ public class ApplicationConfig {
     }
     
     @Bean
+    public ExamValidator examValidator() {
+        return new ExamValidator();
+    }
+    
+    @Bean
+    public QuestionValidator questionValidator() {
+        return new QuestionValidator();
+    }
+    
+    @Bean
     public StudentValidator studentValidator() {
         return new StudentValidator();
     }
