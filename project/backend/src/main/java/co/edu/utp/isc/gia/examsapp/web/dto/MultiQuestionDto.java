@@ -19,6 +19,5 @@ import lombok.experimental.SuperBuilder;
 @Getter @Setter
 @SuperBuilder()
 public class MultiQuestionDto extends QuestionDto{
-    
     private List<AnswerOptionDto> answerOptions;
 }
