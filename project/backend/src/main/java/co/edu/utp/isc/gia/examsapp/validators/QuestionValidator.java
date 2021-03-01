@@ -6,7 +6,7 @@
 package co.edu.utp.isc.gia.examsapp.validators;
 
 
-import co.edu.utp.isc.gia.examsapp.web.dto.AnswerOptionDto;
+//import co.edu.utp.isc.gia.examsapp.web.dto.AnswerOptionDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.abstractdto.QuestionDto;
 import java.util.regex.Pattern;
 
@@ -59,22 +59,12 @@ public class QuestionValidator {
             throw new Exception("question exam is null");
     }
     
-    public void validateAnswerOption() throws Exception {
-        if (this.question.getAnswerOption() == null) return;
-        
-        for (AnswerOptionDto ao : this.question.getAnswerOption()) {
-            this.answerOptionValidator.setAnswerOption(ao);
-            this.answerOptionValidator.performValidationsExcept("id");
-        }
-    }
-    
     public void performValidationsExcept(String attribute) throws Exception {
         this.isNull();
         if (!attribute.equals("id")) this.validateId();
         if (!attribute.equals("questiontype")) this.validateQuestionType();
         if (!attribute.equals("description")) this.validateDescription();
         if (!attribute.equals("exam")) this.validateExam();
-        if (!attribute.equals("answerOption")) this.validateAnswerOption();
     }
     
     public void performValidations() throws Exception {
@@ -83,6 +73,5 @@ public class QuestionValidator {
         this.validateQuestionType();
         this.validateDescription();
         this.validateExam();
-        this.validateAnswerOption();
     }
 }
