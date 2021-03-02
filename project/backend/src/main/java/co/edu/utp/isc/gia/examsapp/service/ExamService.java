@@ -59,10 +59,13 @@ public class ExamService {
         return examsDto;
     }
     
-    public ExamDto findOne(Long id) throws Exception {
+    public List<ExamDto> findByProfessor(Long id) throws Exception {
         try {
-            return modelMapper.map(examRepository.findById(id).get(), 
-                ExamDto.class);
+            List<ExamDto> exams = new ArrayList<>();
+            examRepository.findByProfessorId(id).forEach( exam -> {
+                exams.add(modelMapper.map(exam, ExamDto.class));
+            });
+            return exams;
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
