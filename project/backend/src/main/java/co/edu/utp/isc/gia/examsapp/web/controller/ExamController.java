@@ -42,22 +42,30 @@ public class ExamController {
             return new ResponseEntity<>(exam, HttpStatus.OK);
         }
         catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
     
     @GetMapping("/all")
     public ResponseEntity<?> listAll() throws Exception {
-        List<ExamDto> exams = examService.listAll();
-        return new ResponseEntity<>(exams, HttpStatus.OK);
+        try {
+            List<ExamDto> exams = examService.listAll();
+            return new ResponseEntity<>(exams, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
     
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
-        ExamDto exam = examService.findOne(id);
-        if (exam == null) return new ResponseEntity<> ( 
-                "Exam doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(exam, HttpStatus.OK);
+    @GetMapping("/{professorId}")
+    public ResponseEntity<?> findByProfessor(@PathVariable("professorId") Long professorId) throws Exception {
+        try {
+            List<ExamDto> exams = examService.findByProfessor(professorId);
+            return new ResponseEntity<>(exams, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
     
    @PutMapping
@@ -66,19 +74,22 @@ public class ExamController {
         ExamDto _exam;
         try {
             _exam = examService.update(exam);
+            return new ResponseEntity<>(_exam, HttpStatus.OK);
         }
         catch(Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(_exam, HttpStatus.OK);
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete (@PathVariable("id") Long id)  
             throws Exception{
-        ExamDto exam = examService.delete(id);
-        if (exam == null) return new ResponseEntity<>(
-                "Exam doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(exam, HttpStatus.OK);
+        try {
+            ExamDto exam = examService.delete(id);
+            return new ResponseEntity<>(exam, HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 }
