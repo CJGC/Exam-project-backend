@@ -11,6 +11,8 @@ import co.edu.utp.isc.gia.examsapp.validators.QuestionValidator;
 import co.edu.utp.isc.gia.examsapp.web.dto.abstractdto.QuestionDto;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +48,7 @@ public class QuestionService {
             throw e;
         }
     }
-    
+     
      public List<QuestionDto> listAll() throws Exception {
         ArrayList<Question> questions = new ArrayList<>();
         questionRepository.findAll().forEach(questions::add);
@@ -58,14 +60,17 @@ public class QuestionService {
         return examsDto;
     }
     
-    public QuestionDto findOne(Long id) throws Exception {
+    public List<QuestionDto> findByExam(Long id) throws Exception {
         try {
-            return modelMapper.map(questionRepository.findById(id).get(), 
-                QuestionDto.class);
+            List<QuestionDto> outQuestions = new ArrayList<>();
+            questionRepository.findByExamId(id).forEach( question -> {
+                outQuestions.add(modelMapper.map(question, QuestionDto.class));
+            });
+            return outQuestions;
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }
     
