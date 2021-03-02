@@ -48,16 +48,24 @@ public class QuestionController {
     
     @GetMapping("/all")
     public ResponseEntity<?> listAll() throws Exception {
-        List<QuestionDto> exams = questionService.listAll();
-        return new ResponseEntity<>(exams, HttpStatus.OK);
+        try {
+            List<QuestionDto> exams = questionService.listAll();
+            return new ResponseEntity<>(exams, HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
     
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
-        QuestionDto question = questionService.findOne(id);
-        if (question == null) return new ResponseEntity<> ( 
-                "Exam doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(question, HttpStatus.OK);
+    @GetMapping("/{examId}")
+    public ResponseEntity<?> findbyExam(@PathVariable("examId") Long examId) throws Exception {
+        try {
+            List<QuestionDto> questions = questionService.findByExam(examId);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
     
    @PutMapping
@@ -66,19 +74,22 @@ public class QuestionController {
         QuestionDto _exam;
         try {
             _exam = questionService.update(question);
+            return new ResponseEntity<>(_exam, HttpStatus.OK);
         }
         catch(Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(_exam, HttpStatus.OK);
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete (@PathVariable("id") Long id)  
             throws Exception{
-        QuestionDto question = questionService.delete(id);
-        if (question == null) return new ResponseEntity<>(
-                "Exam doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(question, HttpStatus.OK);
+        try {
+            QuestionDto question = questionService.delete(id);
+            return new ResponseEntity<>(question, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }   
 }
