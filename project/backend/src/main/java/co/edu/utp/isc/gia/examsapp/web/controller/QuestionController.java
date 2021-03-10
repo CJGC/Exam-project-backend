@@ -6,7 +6,7 @@
 package co.edu.utp.isc.gia.examsapp.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.service.QuestionService;
-import co.edu.utp.isc.gia.examsapp.web.dto.abstractdto.QuestionDto;
+import co.edu.utp.isc.gia.examsapp.web.dto.OpenQuestionDto;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ public class QuestionController {
     }
     
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody QuestionDto question) throws Exception {
+    public ResponseEntity<?> save(@RequestBody OpenQuestionDto question) throws Exception {
         try {
             question = questionService.save(question);
             return new ResponseEntity<>(question, HttpStatus.OK);
@@ -49,8 +49,8 @@ public class QuestionController {
     @GetMapping("/all")
     public ResponseEntity<?> listAll() throws Exception {
         try {
-            List<QuestionDto> exams = questionService.listAll();
-            return new ResponseEntity<>(exams, HttpStatus.OK);
+            List<OpenQuestionDto> questions = questionService.listAll();
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         }
         catch(Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -60,7 +60,7 @@ public class QuestionController {
     @GetMapping("/{examId}")
     public ResponseEntity<?> findbyExam(@PathVariable("examId") Long examId) throws Exception {
         try {
-            List<QuestionDto> questions = questionService.findByExam(examId);
+            List<OpenQuestionDto> questions = questionService.findByExam(examId);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         }
         catch (Exception e) {
@@ -69,9 +69,9 @@ public class QuestionController {
     }
     
    @PutMapping
-    public ResponseEntity<?> update(@RequestBody QuestionDto question) 
+    public ResponseEntity<?> update(@RequestBody OpenQuestionDto question) 
             throws Exception {
-        QuestionDto _exam;
+        OpenQuestionDto _exam;
         try {
             _exam = questionService.update(question);
             return new ResponseEntity<>(_exam, HttpStatus.OK);
@@ -85,7 +85,7 @@ public class QuestionController {
     public ResponseEntity<?> delete (@PathVariable("id") Long id)  
             throws Exception{
         try {
-            QuestionDto question = questionService.delete(id);
+            OpenQuestionDto question = questionService.delete(id);
             return new ResponseEntity<>(question, HttpStatus.OK);
         }
         catch (Exception e) {
