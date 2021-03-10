@@ -7,7 +7,7 @@ package co.edu.utp.isc.gia.examsapp.validators;
 
 
 //import co.edu.utp.isc.gia.examsapp.web.dto.AnswerOptionDto;
-import co.edu.utp.isc.gia.examsapp.web.dto.abstractdto.QuestionDto;
+import co.edu.utp.isc.gia.examsapp.web.dto.OpenQuestionDto;
 import java.util.regex.Pattern;
 
 /**
@@ -15,18 +15,16 @@ import java.util.regex.Pattern;
  * @author CJ
  */
 public class QuestionValidator {
-    private QuestionDto question;
-    private final AnswerOptionValidator answerOptionValidator;
+    private OpenQuestionDto question;
     
     public QuestionValidator() {
-        this.answerOptionValidator = new AnswerOptionValidator();
     }
     
-    public QuestionDto getquestion() {
+    public OpenQuestionDto getquestion() {
         return question;
     }
 
-    public void setquestion(QuestionDto question) {
+    public void setquestion(OpenQuestionDto question) {
         this.question = question;
     }
     
@@ -41,9 +39,9 @@ public class QuestionValidator {
     }
 
     public void validateQuestionType() throws Exception {
-        if (this.question.getQuestionType() == null)
+        if (this.question.getType()== null)
             throw new Exception("Question type is null");
-        if (Pattern.matches("", this.question.getQuestionType()))
+        if (Pattern.matches("", this.question.getType()))
             throw new Exception ("Question questionType is empty");
     }
     
