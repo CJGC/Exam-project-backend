@@ -22,7 +22,6 @@ import lombok.Setter;
 public class AnswerOptionDto implements Serializable {
     
     private Long id;
-    private String index;
     private String description;
     private Boolean correctAnswer;
     private Double weight;
