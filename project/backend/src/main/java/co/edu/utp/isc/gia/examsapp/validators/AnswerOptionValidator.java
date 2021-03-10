@@ -35,13 +35,6 @@ public class AnswerOptionValidator {
             throw new Exception("AnswerOption id is null");
     }
 
-    public void validateIndex() throws Exception {
-        if (this.answerOption.getIndex() == null)
-            throw new Exception("AnswerOption index is null");
-        if (Pattern.matches("", this.answerOption.getIndex()))
-            throw new Exception ("AnswerOption index is empty");
-    }
-    
     public void validateDescription() throws Exception {
         if (this.answerOption.getDescription() == null)
             throw new Exception("AnswerOption description is null");
@@ -67,7 +60,6 @@ public class AnswerOptionValidator {
     public void performValidationsExcept(String attribute) throws Exception {
         this.isNull();
         if (!attribute.equals("id")) this.validateId();
-        if (!attribute.equals("index")) this.validateIndex();
         if (!attribute.equals("description")) this.validateDescription();
         if (!attribute.equals("correctAnswer")) this.validateCorrectAnswer();
         if (!attribute.equals("weight")) this.validateWeight();
@@ -76,7 +68,6 @@ public class AnswerOptionValidator {
     
     public void performValidations() throws Exception {
         this.validateId();
-        this.validateIndex();
         this.validateDescription();
         this.validateCorrectAnswer();
         this.validateWeight();
