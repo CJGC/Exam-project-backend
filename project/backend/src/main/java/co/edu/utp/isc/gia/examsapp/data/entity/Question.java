@@ -41,7 +41,9 @@ public class Question implements Serializable  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String questionType;
+    
+    @Column(name="question_type")
+    private String type;
     
     @Column(precision=3, scale=2)
     private Double weight;
