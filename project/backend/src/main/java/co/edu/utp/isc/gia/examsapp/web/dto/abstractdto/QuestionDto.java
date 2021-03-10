@@ -7,7 +7,9 @@ package co.edu.utp.isc.gia.examsapp.web.dto.abstractdto;
 
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
 import java.io.File;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -15,12 +17,14 @@ import lombok.experimental.SuperBuilder;
  *
  * @author CJ
  */
+@AllArgsConstructor 
+@NoArgsConstructor
 @Setter @Getter
 @SuperBuilder()
 public abstract class QuestionDto {
     
     private Long id;
-    private String questionType;
+    private String type;
     private Double weight;
     private String description;
     private File questionImage;
