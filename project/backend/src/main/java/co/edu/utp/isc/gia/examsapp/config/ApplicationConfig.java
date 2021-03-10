@@ -65,4 +65,9 @@ public class ApplicationConfig {
     public SelectedResponseValidator SelectedResponseValidator() {
         return new SelectedResponseValidator();
     }
+    
+    @Bean
+    public AnswerOptionValidator AnswerOptionValidator() {
+        return new AnswerOptionValidator();
+    }
 }
