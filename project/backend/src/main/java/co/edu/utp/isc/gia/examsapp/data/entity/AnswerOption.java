@@ -39,7 +39,6 @@ public class AnswerOption implements Serializable  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String index;
     private String description;
     private Boolean correctAnswer;
     
