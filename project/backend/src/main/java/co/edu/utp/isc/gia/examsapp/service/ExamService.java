@@ -73,6 +73,19 @@ public class ExamService {
         }
     }
     
+    public ExamDto findByLink(String link) throws Exception {
+        try {
+            Exam exam;
+            exam = examRepository.findByLink(link);
+            exam = (exam == null) ? new Exam() : exam;
+            return modelMapper.map(exam, ExamDto.class);
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
     public ExamDto update(ExamDto exam) throws Exception {
         try {
             this.examValidator.setExam(exam);
