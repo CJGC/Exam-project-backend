@@ -77,7 +77,7 @@ public class ExamService {
         try {
             Exam exam;
             exam = examRepository.findByLink(link);
-            exam = (exam == null) ? new Exam() : exam;
+            exam = (exam == null) ? new Exam(new Long(0),"","",0.0,"",0,null,null,null) : exam;
             return modelMapper.map(exam, ExamDto.class);
         }
         catch(Exception e) {
