@@ -15,4 +15,5 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ExamRepository extends CrudRepository<Exam, Long> {
     List<Exam> findByProfessorId(Long professorID);
+    Exam findByLink(String link);
 }
