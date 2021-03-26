@@ -67,7 +67,20 @@ public class StudentService {
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
-            return null;
+            throw e;
+        }
+    }
+    
+    public StudentDto findByIdentificationCard(String identificationCard) throws Exception {
+        try {
+            Student student;
+            student = studentRepository.findByIdentificationCard(identificationCard);
+            student = (student==null) ? new Student() : student;
+            return modelMapper.map(student, StudentDto.class);
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
         }
     }
     
@@ -95,7 +108,7 @@ public class StudentService {
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }
 }
