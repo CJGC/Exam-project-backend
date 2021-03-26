@@ -48,7 +48,7 @@ public class AnswerOption implements Serializable  {
     @OneToMany(mappedBy="answerOption", cascade=CascadeType.ALL)
     private List<SelectedResponse> selectedResponses;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
     private Question question;
     
