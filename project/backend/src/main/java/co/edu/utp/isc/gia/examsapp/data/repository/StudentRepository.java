@@ -13,5 +13,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author CJ
  */
 public interface StudentRepository extends CrudRepository<Student, Long> {
-    
+    Student findByIdentificationCard(String identificationCard);
 }
