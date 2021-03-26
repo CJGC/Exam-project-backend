@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -60,7 +61,19 @@ public class StudentController {
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
     
-    @PutMapping
+    @GetMapping("/byIdentCard")
+    public ResponseEntity<?> findByIdentificationCard(
+            @RequestParam("id") String identificationCard) throws Exception {
+        try {
+            StudentDto student = studentService.findByIdentificationCard(identificationCard);
+            return new ResponseEntity<>(student, HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @PutMapping()
     public ResponseEntity<?> update(@RequestBody StudentDto student) 
             throws Exception {
         StudentDto prof;
