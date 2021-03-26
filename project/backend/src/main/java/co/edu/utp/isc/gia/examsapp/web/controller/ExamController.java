@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -57,11 +58,22 @@ public class ExamController {
         }
     }
     
-    @GetMapping("/{professorId}")
-    public ResponseEntity<?> findByProfessor(@PathVariable("professorId") Long professorId) throws Exception {
+    @GetMapping("/byprofessor")
+    public ResponseEntity<?> findByProfessor(@RequestParam("id") Long professorId) throws Exception {
         try {
             List<ExamDto> exams = examService.findByProfessor(professorId);
             return new ResponseEntity<>(exams, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/bylink")
+    public ResponseEntity<?> findByLink(@RequestParam("id") String link) throws Exception {
+        try {
+            ExamDto exam = examService.findByLink(link);
+            return new ResponseEntity<>(exam, HttpStatus.OK);
         }
         catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
