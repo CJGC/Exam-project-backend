@@ -51,11 +51,11 @@ public class AnwerOptionService {
         ArrayList<AnswerOption> questions = new ArrayList<>();
         answerOptionRepository.findAll().forEach(questions::add);
         
-        List<AnswerOptionDto> openQuestionDto = new ArrayList<>();
+        List<AnswerOptionDto> answerOptionsDto = new ArrayList<>();
         questions.forEach(ansOpt -> {
-            openQuestionDto.add(modelMapper.map(ansOpt, AnswerOptionDto.class));
+            answerOptionsDto.add(modelMapper.map(ansOpt, AnswerOptionDto.class));
         });
-        return openQuestionDto;
+        return answerOptionsDto;
     }
     
     public List<AnswerOptionDto> findByQuestion(Long id) throws Exception {
