@@ -75,7 +75,7 @@ public class StudentService {
         try {
             Student student;
             student = studentRepository.findByIdentificationCard(identificationCard);
-            student = (student==null) ? new Student() : student;
+            student = (student==null) ? new Student(new Long(0),"","","",null) : student;
             return modelMapper.map(student, StudentDto.class);
         }
         catch(Exception e) {
