@@ -1,10 +1,10 @@
 CREATE TABLE Professor (
 
     id bigint auto_increment,
-    identification_card varchar(100) not null,
+    identification_card varchar(100) unique not null,
     name varchar(100) not null,
     lastname varchar(100) not null,
-    email varchar(100) not null,
+    email varchar(100) unique not null,
     username varchar(100) not null,
     password varchar(100) not null,
 
@@ -18,7 +18,7 @@ CREATE TABLE Exam (
     link varchar(512) not null,
     max_grade double default 0.0,
     description varchar(1024) not null,
-    examtime int default 0,
+    durability int default 0,
     professor_id bigint,
 
     constraint pk_exam primary key (id),
@@ -39,7 +39,6 @@ CREATE TABLE Question (
 
 CREATE TABLE Answer_option (
     id bigint auto_increment,
-    index varchar(1) not null,
     description varchar(2048) not null,
     correct_answer boolean default false,
     weight double default 0.0,
@@ -72,7 +71,7 @@ CREATE TABLE Exam_student (
 
 CREATE TABLE Open_response (
     id bigint auto_increment,
-    content varchar(2048) not null,
+    content varchar(2048),
     valoration double default 0.0,
     exam_student_id bigint,
     question_id bigint,
