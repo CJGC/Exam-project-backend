@@ -48,7 +48,7 @@ public class Question implements Serializable  {
     @Column(precision=3, scale=2)
     private Double weight;
     private String description;
-    private File questionImage;
+    private byte[] questionImage;
     
     @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
