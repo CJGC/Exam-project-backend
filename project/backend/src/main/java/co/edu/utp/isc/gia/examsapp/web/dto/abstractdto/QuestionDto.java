@@ -6,7 +6,6 @@
 package co.edu.utp.isc.gia.examsapp.web.dto.abstractdto;
 
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
-import java.io.File;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +26,6 @@ public abstract class QuestionDto {
     private String type;
     private Double weight;
     private String description;
-    private File questionImage;
+    private byte[] questionImage;
     private ExamDto exam;
 }
