@@ -13,5 +13,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author CJ
  */
 public interface SelectedResponseRepository extends CrudRepository<SelectedResponse, Long> {
-    
+    SelectedResponse findByExamStudentIdAndAnswerOptionId(Long examStudentId, Long ansOptId);
 }

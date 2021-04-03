@@ -73,6 +73,26 @@ public class SelectedResponseService {
         }
     }
     
+    public SelectedResponseDto findByExamStudentAndAnsOpt(
+            Long examStudentId, 
+            Long ansOptId) throws Exception {
+        try {
+            SelectedResponse selectedResponse;
+            selectedResponse = selectedResponseRepository.findByExamStudentIdAndAnswerOptionId(examStudentId, ansOptId);
+            
+            if (selectedResponse != null) { 
+                return modelMapper.map(selectedResponse, SelectedResponseDto.class);
+            }
+            else {
+                return null;
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
     public SelectedResponseDto update(SelectedResponseDto selectedResponse) throws Exception {
         try {
             this.selectedResponseValidator.setselectedResponse(selectedResponse);

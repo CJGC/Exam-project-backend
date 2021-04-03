@@ -6,6 +6,7 @@
 package co.edu.utp.isc.gia.examsapp.data.repository;
 
 import co.edu.utp.isc.gia.examsapp.data.entity.ExamStudent;
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -13,5 +14,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author CJ
  */
 public interface ExamStudentRepository extends CrudRepository<ExamStudent, Long> {
-    
+    List<ExamStudent> findByExamId(Long examId);
 }

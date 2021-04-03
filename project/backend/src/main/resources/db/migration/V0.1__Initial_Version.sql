@@ -30,7 +30,7 @@ CREATE TABLE Question (
     question_type varchar(10) not null,
     weight double default 0.0,
     description varchar(2048) not null,
-    question_image varbinary,
+    question_image varchar(100),
     exam_id bigint,
 
     constraint pk_question primary key (id),

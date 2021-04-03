@@ -14,4 +14,5 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface OpenResponseRepository extends CrudRepository<OpenResponse, Long> {
     
+    OpenResponse findByExamStudentIdAndQuestionId(Long examStudentId, Long questionId);
 }

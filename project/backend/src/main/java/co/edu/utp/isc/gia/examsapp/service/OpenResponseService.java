@@ -70,6 +70,20 @@ public class OpenResponseService {
             return null;
         }
     }
+
+    public OpenResponseDto findByExamStudentAndQuestion(
+            Long examStudentId, 
+            Long questionId) throws Exception {
+        try {
+            return modelMapper.map(
+                    openResponseRepository.findByExamStudentIdAndQuestionId(
+                            examStudentId, questionId), OpenResponseDto.class);
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
     
     public OpenResponseDto update(OpenResponseDto openResponse) throws Exception {
         try {

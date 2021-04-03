@@ -7,6 +7,7 @@ package co.edu.utp.isc.gia.examsapp.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.service.SelectedResponseService;
 import co.edu.utp.isc.gia.examsapp.web.dto.SelectedResponseDto;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -50,6 +52,26 @@ public class SelectedResponseController {
     public ResponseEntity<?> listAll() throws Exception {
         List<SelectedResponseDto> selectedResponses = selectedResponseService.listAll();
         return new ResponseEntity<>(selectedResponses, HttpStatus.OK);
+    }
+    
+    @GetMapping("/byexamstudentandquestion")
+    public ResponseEntity<?> findByExamStudentAndQuestion(
+            @RequestParam("examStudentId") Long examStudentId,
+            @RequestParam("ansOptId") Long ansOptId) throws Exception {
+        try {
+            SelectedResponseDto selectedResponse;
+            selectedResponse = selectedResponseService.findByExamStudentAndAnsOpt(
+                    examStudentId, ansOptId);
+            if (selectedResponse != null) {
+                return new ResponseEntity<>(selectedResponse, HttpStatus.OK);    
+            }
+            else {
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
     
     @GetMapping("/{id}")

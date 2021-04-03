@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -50,6 +51,21 @@ public class OpenResponseController {
     public ResponseEntity<?> listAll() throws Exception {
         List<OpenResponseDto> openResponses = openResponseService.listAll();
         return new ResponseEntity<>(openResponses, HttpStatus.OK);
+    }
+    
+    @GetMapping("/byexamstudentandquestion")
+    public ResponseEntity<?> findByExamStudentAndQuestion(
+            @RequestParam("examStudentId") Long examStudentId,
+            @RequestParam("questionId") Long questionId) throws Exception {
+        try {
+            OpenResponseDto examStudent = 
+                    openResponseService.findByExamStudentAndQuestion(examStudentId, 
+                            questionId);
+            return new ResponseEntity<>(examStudent, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
     
     @GetMapping("/{id}")

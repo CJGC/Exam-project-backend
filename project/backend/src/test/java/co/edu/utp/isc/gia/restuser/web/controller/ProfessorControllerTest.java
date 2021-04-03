@@ -40,6 +40,7 @@ public class ProfessorControllerTest {
     public ProfessorControllerTest() {
     }
 
+    /*
     private ProfessorRepository userRepository; 
     private ProfessorController userController;
     private ProfessorValidator professorValidator;
@@ -53,9 +54,12 @@ public class ProfessorControllerTest {
                 modelMapper, professorValidator);
         userController = new ProfessorController(userService);
     }
+    */
     /**
      * Test of save method, of class ProfessorController.
      */
+    
+    /*
    @Test
     public void testSaveProfessorNullObject() {
                 ResponseEntity<?> response = null;
@@ -530,9 +534,9 @@ public class ProfessorControllerTest {
         assertEquals(bodyFromResponse.getUsername(), bodyFromExpResult.getUsername());
         assertEquals(bodyFromResponse.getPassword(), bodyFromExpResult.getPassword());
     }
-    
+    */
 /* Update method test */    
-
+/*
    @Test
     public void testUpdateProfessorNullObject() {
                 ResponseEntity<?> response = null;
@@ -856,10 +860,11 @@ public class ProfessorControllerTest {
         }
         assertEquals(response, expResult);
     }
-
+    */
     /**
      * Test of update method, of class ProfessorController.
      */
+    /*
     @Test
     public void testUpdate() {
         Professor resulted = new Professor(1L,"11","Juan carlos", "Gomez", 
@@ -908,10 +913,11 @@ public class ProfessorControllerTest {
         assertEquals(expResult, response);
 
     }
-    
+    */
     /**
      * Test of findOne method, of class ProfessorController.
      */
+    /*
     @Test
     public void testFindOne() {
         
@@ -960,10 +966,12 @@ public class ProfessorControllerTest {
         
         assertEquals(expResult, response);
     }
-
+*/
     /**
      * Test of delete method, of class ProfessorController.
      */
+    
+    /*
     @Test
     public void testDelete() {
         
@@ -996,10 +1004,11 @@ public class ProfessorControllerTest {
         assertEquals(bodyFromResponse.getPassword(), bodyFromExpResult.getPassword());
         
     }
-
+*/
     /**
      * Test of listAll method, of class ProfessorController.
      */
+    /*
     @Test
     public void testListAll() {
         ArrayList<Professor> resulted = new ArrayList<>();
@@ -1047,6 +1056,6 @@ public class ProfessorControllerTest {
                     BodyfromResult.get(i).getEmail());
         }
         
-    }
+    }*/
 
 }

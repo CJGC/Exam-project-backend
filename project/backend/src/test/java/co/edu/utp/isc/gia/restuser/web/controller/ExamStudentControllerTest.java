@@ -32,6 +32,8 @@ import co.edu.utp.isc.gia.examsapp.web.dto.StudentDto;
  *
  * @author CJ
  */
+
+
 public class ExamStudentControllerTest {
     
     public ExamStudentControllerTest() {
@@ -40,7 +42,7 @@ public class ExamStudentControllerTest {
     private ExamStudentRepository examStudentRepository; 
     private ExamStudentController examStudentController;
     private ExamStudentValidator examStudentValidator;
-    
+/*    
     @Before
     public void init() {
         examStudentRepository = Mockito.mock(ExamStudentRepository.class);
@@ -50,9 +52,11 @@ public class ExamStudentControllerTest {
                 modelMapper, examStudentValidator);
         examStudentController = new ExamStudentController(examStudentService);
     }
+ */
     /**
      * Test of save method, of class ExamStudentController.
      */
+/*
    @Test
     public void testSaveExamStudentNullObject() {
                 ResponseEntity<?> response = null;
@@ -167,9 +171,9 @@ public class ExamStudentControllerTest {
         assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
         assertEquals(bodyFromResponse.getDefinitiveGrade(), bodyFromExpResult.getDefinitiveGrade());
     }
-    
+ */
 ///* Update method test */    
-
+/*
    @Test
     public void testUpdateExamStudentNullObject() {
         ResponseEntity<?> response = null;
@@ -275,10 +279,12 @@ public class ExamStudentControllerTest {
         assertEquals(response, expResult);
     }      
     
-
+*/
     /**
      * Test of update method, of class ExamStudentController.
      */
+    
+    /*
     @Test
     public void testUpdate() {
         Exam exam = new Exam();
@@ -329,10 +335,11 @@ public class ExamStudentControllerTest {
         assertEquals(expResult, response);
 
     }
-    
+    */
     /**
      * Test of findOne method, of class ExamStudentController.
      */
+    /*
     @Test
     public void testFindOne() {
       
@@ -384,10 +391,11 @@ public class ExamStudentControllerTest {
         
         assertEquals(expResult, response);
     }
-
+*/
     /**
      * Test of delete method, of class ExamStudentController.
      */
+    /*
     @Test
     public void testDelete() {
         Exam exam = new Exam();
@@ -421,10 +429,11 @@ public class ExamStudentControllerTest {
         assertEquals(bodyFromResponse.getDefinitiveGrade(), bodyFromExpResult.getDefinitiveGrade());
         
     }
-
+*/
     /**
      * Test of listAll method, of class ExamStudentController.
      */
+    /*
     @Test
     public void testListAll() {
         
@@ -471,5 +480,5 @@ public class ExamStudentControllerTest {
         }
         
     }
-
+*/
 }

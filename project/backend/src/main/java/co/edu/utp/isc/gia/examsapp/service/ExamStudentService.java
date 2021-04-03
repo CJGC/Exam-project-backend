@@ -71,6 +71,20 @@ public class ExamStudentService {
         }
     }
     
+    public List<ExamStudentDto> findByExam(Long examId) throws Exception {
+        try {
+            List<ExamStudentDto> examStudentsDto = new ArrayList<>(); 
+            examStudentRepository.findByExamId(examId).forEach(examStudent -> {
+                examStudentsDto.add(modelMapper.map(examStudent, ExamStudentDto.class));
+            });
+            return examStudentsDto;
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
     public ExamStudentDto update(ExamStudentDto examStudent) throws Exception {
         try {
             this.examStudentValidator.setexamStudent(examStudent);
