@@ -9,6 +9,7 @@ import co.edu.utp.isc.gia.examsapp.service.QuestionService;
 import co.edu.utp.isc.gia.examsapp.web.dto.OpenQuestionDto;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -46,6 +49,17 @@ public class QuestionController {
         }
     }
     
+    @PostMapping("/saveImage")
+    public ResponseEntity<?> saveImage(@RequestParam("file") MultipartFile image) throws Exception {
+        try {
+            String fileName = questionService.saveFile(image);
+            return new ResponseEntity<>(fileName, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
     @GetMapping("/all")
     public ResponseEntity<?> listAll() throws Exception {
         try {
@@ -62,6 +76,19 @@ public class QuestionController {
         try {
             List<OpenQuestionDto> questions = questionService.findByExam(examId);
             return new ResponseEntity<>(questions, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(
+    value = "/getImage",
+            produces = {MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_GIF_VALUE,MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<?> uploadFile(@RequestParam("imgRoute") String examId) throws Exception {
+        try {
+            byte[] image = questionService.uploadFile(examId);
+            return new ResponseEntity<>(image, HttpStatus.OK);
         }
         catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -91,5 +118,16 @@ public class QuestionController {
         catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }   
+    }
+    
+    @DeleteMapping("/delImage")
+    public ResponseEntity<?> deleteImage(@RequestParam("imgRoute") String imageRoute) throws Exception {
+        try {
+            String fileRoute = questionService.deleteFile(imageRoute);
+            return new ResponseEntity<>(fileRoute, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
