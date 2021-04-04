@@ -9,10 +9,16 @@ import co.edu.utp.isc.gia.examsapp.data.entity.Question;
 import co.edu.utp.isc.gia.examsapp.data.repository.QuestionRepository;
 import co.edu.utp.isc.gia.examsapp.validators.QuestionValidator;
 import co.edu.utp.isc.gia.examsapp.web.dto.OpenQuestionDto;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -46,7 +52,96 @@ public class QuestionService {
             throw e;
         }
     }
-     
+
+    @SuppressWarnings("null")
+    private Boolean isAValidImageFile(MultipartFile image) {
+        String dataType;
+        dataType = image.getContentType().substring(0, 
+                image.getContentType().indexOf("/"));
+        return (!image.isEmpty() && dataType.equals("image"));
+    }
+    
+    private void makeDirectory(File resourcesDir) {
+        if (!resourcesDir.exists()) {
+            resourcesDir.mkdir();
+        }
+    }
+    
+    public String saveFile(MultipartFile image) throws Exception {        
+        try {
+
+            if (!isAValidImageFile(image)) {
+                throw new Exception("Invalid data type file or empty file");
+            }
+
+            String imageName = image.getOriginalFilename();
+            File resourcesDir = new File("resources");
+            makeDirectory(resourcesDir);
+
+            // build route where File is.
+            Path fileRoute = Paths.get(resourcesDir.toURI()).
+                    resolve(imageName).toAbsolutePath();
+            
+            // try to load file
+            File existFile = new File(fileRoute.toString());
+            
+            // check if file exist, if not create the file
+            if (!existFile.exists()) {
+                Files.copy(image.getInputStream(), fileRoute);
+                return imageName;                    
+            } else {
+                return imageName;
+            }
+            
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+    
+    public byte[] uploadFile(String imageName) throws Exception {
+        try {
+            File resourcesDir = new File("resources");
+
+            // build route where File is.
+            Path fileRoute = Paths.get(resourcesDir.toURI()).
+                    resolve(imageName).toAbsolutePath();
+
+            // try to load file
+            File file = new File(fileRoute.toString());
+
+            // check if file exist, if not create the file
+            if (!file.exists()) {
+                throw new Exception("Invalid route or file does not exist");                   
+            } else {
+                return Files.readAllBytes(fileRoute);
+            }
+        }
+        catch (Exception e) {
+            System.out.print(e.getMessage());
+            throw e;
+        }
+    }
+    
+    public String deleteFile(String imageName) throws Exception {        
+        try {
+
+            File resourcesDir = new File("resources");
+
+            // build route where File is.
+            Path fileRoute = Paths.get(resourcesDir.toURI()).
+                    resolve(imageName).toAbsolutePath();
+
+            Files.deleteIfExists(fileRoute);
+            return imageName;            
+        }
+        catch(IOException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+    
      public List<OpenQuestionDto> listAll() throws Exception {
         ArrayList<Question> questions = new ArrayList<>();
         questionRepository.findAll().forEach(questions::add);
