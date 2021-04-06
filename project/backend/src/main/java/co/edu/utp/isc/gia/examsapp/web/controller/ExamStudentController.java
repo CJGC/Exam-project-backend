@@ -63,7 +63,18 @@ public class ExamStudentController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
-        
+     
+    @GetMapping("/bystudent")
+    public ResponseEntity<?> findByStudent(@RequestParam("id") Long studentId) throws Exception {
+        try {
+            return new ResponseEntity<>(examStudentService.
+                    findByStudent(studentId), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
         ExamStudentDto examStudent = examStudentService.findOne(id);
