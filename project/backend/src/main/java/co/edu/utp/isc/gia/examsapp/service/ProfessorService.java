@@ -39,6 +39,13 @@ public class ProfessorService {
         try {
             this.ProfessorValidator.setProfessor(professor);
             this.ProfessorValidator.performValidationsExcept("id");
+            
+            if (this.ProfessorValidator.getExceptions().length() > 0) {
+                String exceptions = this.ProfessorValidator.getExceptions();
+                this.ProfessorValidator.setExceptions("");
+                throw new Exception(exceptions);
+            }
+            
             Professor auxProf = modelMapper.map(professor ,Professor.class);
             auxProf = userRepository.save(auxProf);
             return modelMapper.map(auxProf, ProfessorDto.class);
@@ -62,8 +69,13 @@ public class ProfessorService {
     
     public ProfessorDto findOne(Long id) throws Exception {
         try {
-            return modelMapper.map(userRepository.findById(id).get(), 
-                ProfessorDto.class);
+            Professor professor = userRepository.findById(id).get();
+            if (professor != null) {
+                return modelMapper.map(professor, ProfessorDto.class);
+            }
+            else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -75,6 +87,13 @@ public class ProfessorService {
         try {
             this.ProfessorValidator.setProfessor(professor);
             this.ProfessorValidator.performValidations();
+            
+            if (this.ProfessorValidator.getExceptions().length() > 0) {
+                String exceptions = this.ProfessorValidator.getExceptions();
+                this.ProfessorValidator.setExceptions("");
+                throw new Exception(exceptions);
+            }
+            
             Professor auxProf = userRepository.save(modelMapper.map(professor, 
                     Professor.class));
             return modelMapper.map(auxProf, ProfessorDto.class);
@@ -85,13 +104,10 @@ public class ProfessorService {
         }
     }
     
-    public ProfessorDto delete(Long id) throws Exception {
-        
+    public String delete(Long id) throws Exception {
         try {
-            ProfessorDto user = modelMapper.map(userRepository.findById(id).get(), 
-                    ProfessorDto.class);
             userRepository.deleteById(id);
-            return user;
+            return "Professor deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
@@ -100,10 +116,13 @@ public class ProfessorService {
     }
     
     public ProfessorDto findByUsername(String username) throws Exception {
-        
         try{
-           return modelMapper.map(userRepository.findByUsername(username), 
-                ProfessorDto.class);
+            Professor professor = userRepository.findByUsername(username);
+            if (professor != null) {
+                return modelMapper.map(professor, ProfessorDto.class);
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.print(e.getMessage());
