@@ -84,6 +84,23 @@ public class ExamStudentService {
             return null;
         }
     }
+ 
+    public ExamStudentDto findByStudent(Long studentId) throws Exception {
+        try {
+            ExamStudent examStudent = examStudentRepository.findByStudentId(studentId);
+            ExamStudentDto examStduentReponse = null;
+            
+            if(examStudent != null) {
+                examStduentReponse = modelMapper.map(examStudent, ExamStudentDto.class);
+            } 
+            
+            return examStduentReponse;
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
     
     public ExamStudentDto update(ExamStudentDto examStudent) throws Exception {
         try {
