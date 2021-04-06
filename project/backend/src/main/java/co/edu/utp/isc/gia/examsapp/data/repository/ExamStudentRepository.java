@@ -15,4 +15,5 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ExamStudentRepository extends CrudRepository<ExamStudent, Long> {
     List<ExamStudent> findByExamId(Long examId);
+    ExamStudent findByStudentId(Long studentId);
 }
