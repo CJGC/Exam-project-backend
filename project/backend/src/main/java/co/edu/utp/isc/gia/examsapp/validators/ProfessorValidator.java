@@ -10,6 +10,7 @@ import co.edu.utp.isc.gia.examsapp.web.dto.ProfessorDto;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -18,6 +19,7 @@ import lombok.Setter;
  */
 @AllArgsConstructor
 @Setter @Getter
+@NoArgsConstructor
 public class ProfessorValidator {
     private ProfessorDto professor;
     private String exceptions;
@@ -34,7 +36,7 @@ public class ProfessorValidator {
             return;
         }
         
-        if (this.professor.getId() == 0)
+        if (this.professor.getId() <= 0)
             exceptions += "Professor's id is invalid\n";
     }
 
