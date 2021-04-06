@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,17 +57,20 @@ public class ProfessorController {
     public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
         ProfessorDto professor = userService.findOne(id);
         if (professor == null) return new ResponseEntity<> ( 
-                "Professor doesn't exist", HttpStatus.NOT_FOUND);
+                "Professor doesn't exist", HttpStatus.OK);
         return new ResponseEntity<>(professor, HttpStatus.OK);
     }
     
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> findByUsername(
+    @GetMapping("/byusername")
+    public ResponseEntity<?> findByUsername (
             @RequestParam(value="username") String username) throws Exception {
-        ProfessorDto professor = userService.findByUsername(username);
-        if (professor == null) return new ResponseEntity<>(
-                "Professor doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(professor, HttpStatus.OK);
+        try {
+            ProfessorDto professor = userService.findByUsername(username);
+            return new ResponseEntity<>(professor, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
     
     @PutMapping
@@ -87,10 +89,13 @@ public class ProfessorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete (@PathVariable("id") Long id)  
             throws Exception{
-        ProfessorDto professor = userService.delete(id);
-        if (professor == null) return new ResponseEntity<>(
-                "Professor doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(professor, HttpStatus.OK);
+        try {
+            String response = userService.delete(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>("Error during delete request", HttpStatus.BAD_REQUEST);   
+        }
     }
     
 }
