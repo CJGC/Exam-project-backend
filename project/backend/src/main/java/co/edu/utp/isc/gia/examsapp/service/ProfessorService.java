@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import co.edu.utp.isc.gia.examsapp.data.repository.ProfessorRepository;
 import co.edu.utp.isc.gia.examsapp.validators.ProfessorValidator;
+import java.io.IOException;
 
 /**
  *
@@ -37,13 +38,15 @@ public class ProfessorService {
     
     public ProfessorDto save(ProfessorDto professorDto) throws Exception {        
         try {
-            this.ProfessorValidator.setExceptions("");
+
             this.ProfessorValidator.setProfessor(professorDto);
+            this.ProfessorValidator.setExceptions("");
             this.ProfessorValidator.performValidationsExcept("id");
+            String professorExceptions = this.ProfessorValidator.getExceptions();
             
-            if (this.ProfessorValidator.getExceptions().length() > 0) {
+            if (professorExceptions.length() > 0) {
                 String exceptions = this.ProfessorValidator.getExceptions();
-                throw new Exception(exceptions);
+                throw new IOException(exceptions);
             }
             
             Professor professor = modelMapper.map(professorDto ,Professor.class);
@@ -88,15 +91,33 @@ public class ProfessorService {
         }
     }
     
+    public ProfessorDto findByUsername(String username) throws Exception {
+        try{
+            Professor professor = userRepository.findByUsername(username);
+            if (professor != null) {
+                return modelMapper.map(professor, ProfessorDto.class);
+            } else {
+                return null;
+            }
+        }
+        catch(Exception e) {
+            System.out.print(e.getMessage());
+            return null;
+        }
+    }
+    
     public ProfessorDto update(ProfessorDto professorDto) throws Exception {
         try {
-            this.ProfessorValidator.setExceptions("");
+
             this.ProfessorValidator.setProfessor(professorDto);
+            this.ProfessorValidator.setExceptions("");
             this.ProfessorValidator.performValidations();
+            String professorExceptions = this.ProfessorValidator.getExceptions();
             
-            if (this.ProfessorValidator.getExceptions().length() > 0) {
+            if (professorExceptions.length() > 0) {
+
                 String exceptions = this.ProfessorValidator.getExceptions();
-                throw new Exception(exceptions);
+                throw new IOException(exceptions);
             }
             
             Professor professor = userRepository.save(modelMapper.map(professorDto, 
@@ -122,22 +143,7 @@ public class ProfessorService {
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
-        }
-    }
-    
-    public ProfessorDto findByUsername(String username) throws Exception {
-        try{
-            Professor professor = userRepository.findByUsername(username);
-            if (professor != null) {
-                return modelMapper.map(professor, ProfessorDto.class);
-            } else {
-                return null;
-            }
-        }
-        catch(Exception e) {
-            System.out.print(e.getMessage());
-            return null;
+            throw e;
         }
     }
 }

@@ -9,6 +9,7 @@ import co.edu.utp.isc.gia.examsapp.data.entity.AnswerOption;
 import co.edu.utp.isc.gia.examsapp.data.repository.AnswerOptionRepository;
 import co.edu.utp.isc.gia.examsapp.validators.AnswerOptionValidator;
 import co.edu.utp.isc.gia.examsapp.web.dto.AnswerOptionDto;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.modelmapper.ModelMapper;
@@ -33,13 +34,25 @@ public class AnwerOptionService {
         this.answerOptionValidator = answerOptionValidator;
     }
     
-    public AnswerOptionDto save(AnswerOptionDto ansOpt) throws Exception {        
+    public AnswerOptionDto save(AnswerOptionDto ansOptDto) throws Exception {        
         try {
-            this.answerOptionValidator.setAnswerOption(ansOpt);
+            this.answerOptionValidator.setAnswerOption(ansOptDto);
+            this.answerOptionValidator.setExceptions("");
             this.answerOptionValidator.performValidationsExcept("id");
-            AnswerOption auxAnsOpt = modelMapper.map(ansOpt ,AnswerOption.class);
-            auxAnsOpt = answerOptionRepository.save(auxAnsOpt);
-            return modelMapper.map(auxAnsOpt, AnswerOptionDto.class);
+            String ansOptExceptions = this.answerOptionValidator.getExceptions();
+            
+            if (ansOptExceptions.length() > 0) {
+                throw new IOException(ansOptExceptions);
+            }
+            
+            AnswerOption ansOpt = modelMapper.map(ansOptDto ,AnswerOption.class);
+            ansOpt = answerOptionRepository.save(ansOpt);
+            
+            if (ansOpt != null) {
+                return modelMapper.map(ansOpt, AnswerOptionDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -72,13 +85,26 @@ public class AnwerOptionService {
         }
     }
     
-    public AnswerOptionDto update(AnswerOptionDto ansOpt) throws Exception {
+    public AnswerOptionDto update(AnswerOptionDto ansOptDto) throws Exception {
         try {
-            this.answerOptionValidator.setAnswerOption(ansOpt);
+            this.answerOptionValidator.setAnswerOption(ansOptDto);
+            this.answerOptionValidator.setExceptions("");
             this.answerOptionValidator.performValidations();
-            AnswerOption auxAnsOpt = answerOptionRepository.save(modelMapper.map(ansOpt, 
-                    AnswerOption.class));
-            return modelMapper.map(auxAnsOpt, AnswerOptionDto.class);
+            String ansOptExceptions = this.answerOptionValidator.getExceptions();
+            
+            if (ansOptExceptions.length() > 0) {
+                throw new IOException(ansOptExceptions);
+            }
+            
+            AnswerOption ansOpt = modelMapper.map(ansOptDto, AnswerOption.class);
+            ansOpt = answerOptionRepository.save(ansOpt);
+            
+            if (ansOpt != null) {
+                return modelMapper.map(ansOpt, AnswerOptionDto.class);                
+            } else {
+                return null;
+            }
+
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -86,17 +112,14 @@ public class AnwerOptionService {
         }
     }
     
-    public AnswerOptionDto delete(Long id) throws Exception {
-        
+    public String delete(Long id) throws Exception {
         try {
-            AnswerOptionDto ansOpt = modelMapper.map(answerOptionRepository.findById(id).get(), 
-                    AnswerOptionDto.class);
             answerOptionRepository.deleteById(id);
-            return ansOpt;
+            return "Answer option deleted sucessfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }  
 }

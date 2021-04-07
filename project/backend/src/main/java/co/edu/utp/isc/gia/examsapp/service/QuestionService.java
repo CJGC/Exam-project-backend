@@ -39,13 +39,26 @@ public class QuestionService {
         this.questionValidator = questionValidator;
     }
     
-    public OpenQuestionDto save(OpenQuestionDto question) throws Exception {        
+    public OpenQuestionDto save(OpenQuestionDto questionDto) throws Exception {        
         try {
-            this.questionValidator.setquestion(question);
+            this.questionValidator.setQuestion(questionDto);
+            this.questionValidator.setExceptions("");
             this.questionValidator.performValidationsExcept("id");
-            Question auxQuestion = modelMapper.map(question ,Question.class);
-            auxQuestion = questionRepository.save(auxQuestion);
-            return modelMapper.map(auxQuestion, OpenQuestionDto.class);
+            String questionExceptions = this.questionValidator.getExceptions();
+            
+            if (questionExceptions.length() > 0) {
+                throw new IOException(questionExceptions);
+            }
+            
+            Question question = modelMapper.map(questionDto, Question.class);
+            question = questionRepository.save(question);
+            
+            if (question != null) {
+                return modelMapper.map(question, OpenQuestionDto.class);                
+            } else {
+                return null;
+            }
+
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -67,7 +80,7 @@ public class QuestionService {
         }
     }
     
-    public String saveFile(MultipartFile image) throws Exception {        
+    public String saveImage(MultipartFile image) throws Exception {        
         try {
 
             if (!isAValidImageFile(image)) {
@@ -100,7 +113,7 @@ public class QuestionService {
         }
     }
     
-    public byte[] uploadFile(String imageName) throws Exception {
+    public byte[] uploadImage(String imageName) throws Exception {
         try {
             File resourcesDir = new File("resources");
 
@@ -124,7 +137,7 @@ public class QuestionService {
         }
     }
     
-    public String deleteFile(String imageName) throws Exception {        
+    public String deleteImage(String imageName) throws Exception {        
         try {
 
             File resourcesDir = new File("resources");
@@ -155,11 +168,11 @@ public class QuestionService {
     
     public List<OpenQuestionDto> findByExam(Long id) throws Exception {
         try {
-            List<OpenQuestionDto> outQuestions = new ArrayList<>();
+            List<OpenQuestionDto> questionsDto = new ArrayList<>();
             questionRepository.findByExamId(id).forEach( question -> {
-                outQuestions.add(modelMapper.map(question, OpenQuestionDto.class));
+                questionsDto.add(modelMapper.map(question, OpenQuestionDto.class));
             });
-            return outQuestions;
+            return questionsDto;
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -167,13 +180,25 @@ public class QuestionService {
         }
     }
     
-    public OpenQuestionDto update(OpenQuestionDto question) throws Exception {
+    public OpenQuestionDto update(OpenQuestionDto questionDto) throws Exception {
         try {
-            this.questionValidator.setquestion(question);
+            this.questionValidator.setQuestion(questionDto);
+            this.questionValidator.setExceptions("");
             this.questionValidator.performValidations();
-            Question auxQuestion = questionRepository.save(modelMapper.map(question, 
-                    Question.class));
-            return modelMapper.map(auxQuestion, OpenQuestionDto.class);
+            String questionExceptions = this.questionValidator.getExceptions();
+            
+            if (questionExceptions.length() > 0) {
+                throw new IOException(questionExceptions);
+            }
+            
+            Question question = modelMapper.map(questionDto, Question.class);
+            question = questionRepository.save(question);
+            
+            if (question != null) {
+                return modelMapper.map(question, OpenQuestionDto.class);                
+            } else {
+                return null;
+            }
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -181,17 +206,15 @@ public class QuestionService {
         }
     }
     
-    public OpenQuestionDto delete(Long id) throws Exception {
+    public String delete(Long id) throws Exception {
         
         try {
-            OpenQuestionDto question = modelMapper.map(questionRepository.findById(id).get(), 
-                    OpenQuestionDto.class);
             questionRepository.deleteById(id);
-            return question;
+            return "Question deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }  
 }

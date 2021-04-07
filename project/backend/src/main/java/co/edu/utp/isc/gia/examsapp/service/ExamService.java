@@ -9,6 +9,7 @@ import co.edu.utp.isc.gia.examsapp.data.entity.Exam;
 import co.edu.utp.isc.gia.examsapp.data.repository.ExamRepository;
 import co.edu.utp.isc.gia.examsapp.validators.ExamValidator;
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.modelmapper.ModelMapper;
@@ -34,13 +35,26 @@ public class ExamService {
         this.examValidator = examValidator;
     }
     
-    public ExamDto save(ExamDto exam) throws Exception {        
+    public ExamDto save(ExamDto examDto) throws Exception {        
         try {
-            this.examValidator.setExam(exam);
+            this.examValidator.setExam(examDto);
+                        this.examValidator.setExceptions("");
             this.examValidator.performValidationsExcept("id");
-            Exam auxExam = modelMapper.map(exam ,Exam.class);
-            auxExam = examRepository.save(auxExam);
-            return modelMapper.map(auxExam, ExamDto.class);
+            String examExceptions = this.examValidator.getExceptions();
+            
+            if (examExceptions.length() > 0) {
+                throw new IOException(examExceptions);
+            }
+            
+            Exam exam = modelMapper.map(examDto ,Exam.class);
+            exam = examRepository.save(exam);
+            
+            if (exam != null) {
+                return modelMapper.map(exam, ExamDto.class);                
+            } else {
+                return null;
+            }
+
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -75,10 +89,13 @@ public class ExamService {
     
     public ExamDto findByLink(String link) throws Exception {
         try {
-            Exam exam;
-            exam = examRepository.findByLink(link);
-            exam = (exam == null) ? new Exam(new Long(0),"","",0.0,"",0,null,null,null) : exam;
-            return modelMapper.map(exam, ExamDto.class);
+            Exam exam = examRepository.findByLink(link);
+            
+            if (exam != null) {
+                return modelMapper.map(exam, ExamDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -86,13 +103,26 @@ public class ExamService {
         }
     }
     
-    public ExamDto update(ExamDto exam) throws Exception {
+    public ExamDto update(ExamDto examDto) throws Exception {
         try {
-            this.examValidator.setExam(exam);
+            this.examValidator.setExam(examDto);
+            this.examValidator.setExceptions("");
             this.examValidator.performValidations();
-            Exam auxExam = examRepository.save(modelMapper.map(exam, 
+            String examExceptions = this.examValidator.getExceptions();
+            
+            if (examExceptions.length() > 0) {
+                throw new IOException(examExceptions);
+            }
+                    
+            Exam exam = examRepository.save(modelMapper.map(examDto, 
                     Exam.class));
-            return modelMapper.map(auxExam, ExamDto.class);
+            
+            if (exam != null) {
+                return modelMapper.map(exam, ExamDto.class);                
+            } else {
+                return null;
+            }
+
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -100,17 +130,15 @@ public class ExamService {
         }
     }
     
-    public ExamDto delete(Long id) throws Exception {
+    public String delete(Long id) throws Exception {
         
         try {
-            ExamDto exam = modelMapper.map(examRepository.findById(id).get(), 
-                    ExamDto.class);
             examRepository.deleteById(id);
-            return exam;
+            return "Exam deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }
 }

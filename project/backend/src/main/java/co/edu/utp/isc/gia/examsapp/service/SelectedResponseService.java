@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import co.edu.utp.isc.gia.examsapp.data.repository.SelectedResponseRepository;
 import co.edu.utp.isc.gia.examsapp.validators.SelectedResponseValidator;
+import java.io.IOException;
 
 /**
  *
@@ -35,14 +36,25 @@ public class SelectedResponseService {
         this.selectedResponseValidator = selectedResponseValidator;
     }
     
-    public SelectedResponseDto save(SelectedResponseDto selectedResponse) throws Exception {        
+    public SelectedResponseDto save(SelectedResponseDto selectedResponseDto) throws Exception {        
         try {
-            this.selectedResponseValidator.setselectedResponse(selectedResponse);
+            this.selectedResponseValidator.setSelectedResponse(selectedResponseDto);
             this.selectedResponseValidator.performValidationsExcept("id");
-            SelectedResponse auxSelectedResp = modelMapper.map(selectedResponse, 
-                    SelectedResponse.class);
-            auxSelectedResp = selectedResponseRepository.save(auxSelectedResp);
-            return modelMapper.map(auxSelectedResp, SelectedResponseDto.class);
+            this.selectedResponseValidator.setExceptions("");
+            String selectedResponseExceptions = this.selectedResponseValidator.getExceptions();
+            
+            if (selectedResponseExceptions.length() > 0) {
+                throw new IOException(selectedResponseExceptions);
+            }
+            
+            SelectedResponse selectedResponse = modelMapper.map(selectedResponseDto, SelectedResponse.class); 
+            selectedResponse = selectedResponseRepository.save(selectedResponse);
+            
+            if (selectedResponse != null) {
+                return modelMapper.map(selectedResponse, SelectedResponseDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -64,8 +76,13 @@ public class SelectedResponseService {
     
     public SelectedResponseDto findOne(Long id) throws Exception {
         try {
-            return modelMapper.map(selectedResponseRepository.findById(id).get(), 
-                SelectedResponseDto.class);
+            SelectedResponse selectedResponse = selectedResponseRepository.findById(id).get();
+            
+            if (selectedResponse != null) {
+                return modelMapper.map(selectedResponse, SelectedResponseDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -73,12 +90,12 @@ public class SelectedResponseService {
         }
     }
     
-    public SelectedResponseDto findByExamStudentAndAnsOpt(
-            Long examStudentId, 
+    public SelectedResponseDto findByExamStudentAndAnsOpt(Long examStudentId, 
             Long ansOptId) throws Exception {
         try {
             SelectedResponse selectedResponse;
-            selectedResponse = selectedResponseRepository.findByExamStudentIdAndAnswerOptionId(examStudentId, ansOptId);
+            selectedResponse = selectedResponseRepository.
+                    findByExamStudentIdAndAnswerOptionId(examStudentId, ansOptId);
             
             if (selectedResponse != null) { 
                 return modelMapper.map(selectedResponse, SelectedResponseDto.class);
@@ -93,14 +110,25 @@ public class SelectedResponseService {
         }
     }
     
-    public SelectedResponseDto update(SelectedResponseDto selectedResponse) throws Exception {
+    public SelectedResponseDto update(SelectedResponseDto selectedResponseDto) throws Exception {
         try {
-            this.selectedResponseValidator.setselectedResponse(selectedResponse);
+            this.selectedResponseValidator.setSelectedResponse(selectedResponseDto);
+            this.selectedResponseValidator.setExceptions("");
             this.selectedResponseValidator.performValidations();
-            SelectedResponse auxSelectedResp = selectedResponseRepository.save(
-                    modelMapper.map(selectedResponse, 
-                    SelectedResponse.class));
-            return modelMapper.map(auxSelectedResp, SelectedResponseDto.class);
+            String selectedResponseExceptions = this.selectedResponseValidator.getExceptions();
+            
+            if (selectedResponseExceptions.length() > 0) {
+                throw new IOException(selectedResponseExceptions);
+            }
+            
+            SelectedResponse selectedResponse = selectedResponseRepository.save(
+                    modelMapper.map(selectedResponseDto, SelectedResponse.class));
+            
+            if (selectedResponse != null) {
+                return modelMapper.map(selectedResponse, SelectedResponseDto.class);
+            } else {
+                return null;
+            }
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -108,18 +136,14 @@ public class SelectedResponseService {
         }
     }
     
-    public SelectedResponseDto delete(Long id) throws Exception {
-        
+    public String delete(Long id) throws Exception {
         try {
-            SelectedResponseDto selectedResponse = modelMapper.map(
-                    selectedResponseRepository.findById(id).get(), 
-                    SelectedResponseDto.class);
             selectedResponseRepository.deleteById(id);
-            return selectedResponse;
+            return "Selected response deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }
 }

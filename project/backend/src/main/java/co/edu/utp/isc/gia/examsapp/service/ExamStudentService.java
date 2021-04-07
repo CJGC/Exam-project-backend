@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import co.edu.utp.isc.gia.examsapp.data.repository.ExamStudentRepository;
 import co.edu.utp.isc.gia.examsapp.validators.ExamStudentValidator;
+import java.io.IOException;
 
 /**
  *
@@ -35,13 +36,25 @@ public class ExamStudentService {
         this.examStudentValidator = examStudentValidator;
     }
     
-    public ExamStudentDto save(ExamStudentDto examStudent) throws Exception {        
+    public ExamStudentDto save(ExamStudentDto examStudentDto) throws Exception {        
         try {
-            this.examStudentValidator.setexamStudent(examStudent);
+            this.examStudentValidator.setExamStudent(examStudentDto);
+            this.examStudentValidator.setExceptions("");
             this.examStudentValidator.performValidationsExcept("id");
-            ExamStudent auxExamStud = modelMapper.map(examStudent, ExamStudent.class);
-            auxExamStud = examStudentRepository.save(auxExamStud);
-            return modelMapper.map(auxExamStud, ExamStudentDto.class);
+            String examStudentExceptions = this.examStudentValidator.getExceptions();
+            
+            if ( examStudentExceptions.length() > 0) {
+                throw new IOException(examStudentExceptions);
+            }
+            
+            ExamStudent examStudent = modelMapper.map(examStudentDto, ExamStudent.class);
+            examStudent = examStudentRepository.save(examStudent);
+            
+            if (examStudent != null) {
+                return modelMapper.map(examStudent, ExamStudentDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -62,8 +75,13 @@ public class ExamStudentService {
     
     public ExamStudentDto findOne(Long id) throws Exception {
         try {
-            return modelMapper.map(examStudentRepository.findById(id).get(), 
-                ExamStudentDto.class);
+            ExamStudent examStudent = examStudentRepository.findById(id).get();
+            
+            if (examStudent != null) {
+                return modelMapper.map(examStudent, ExamStudentDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -88,13 +106,12 @@ public class ExamStudentService {
     public ExamStudentDto findByStudent(Long studentId) throws Exception {
         try {
             ExamStudent examStudent = examStudentRepository.findByStudentId(studentId);
-            ExamStudentDto examStduentReponse = null;
             
             if(examStudent != null) {
-                examStduentReponse = modelMapper.map(examStudent, ExamStudentDto.class);
-            } 
-            
-            return examStduentReponse;
+                return modelMapper.map(examStudent, ExamStudentDto.class);
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -102,13 +119,25 @@ public class ExamStudentService {
         }
     }
     
-    public ExamStudentDto update(ExamStudentDto examStudent) throws Exception {
+    public ExamStudentDto update(ExamStudentDto examStudentDto) throws Exception {
         try {
-            this.examStudentValidator.setexamStudent(examStudent);
+            this.examStudentValidator.setExamStudent(examStudentDto);
+            this.examStudentValidator.setExceptions("");
             this.examStudentValidator.performValidations();
-            ExamStudent auxExamStud = examStudentRepository.save(modelMapper.map(examStudent, 
-                    ExamStudent.class));
-            return modelMapper.map(auxExamStud, ExamStudentDto.class);
+            String examStudentExceptions = this.examStudentValidator.getExceptions();
+            
+            if (examStudentExceptions.length() > 0) {
+                throw new IOException(examStudentExceptions);
+            }
+            ExamStudent examStudent = modelMapper.map(examStudentDto, 
+                    ExamStudent.class);
+            examStudent = examStudentRepository.save(examStudent);
+            
+            if (examStudent != null) {
+                return modelMapper.map(examStudent, ExamStudentDto.class);                
+            } else {
+                return null;
+            }
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -116,17 +145,14 @@ public class ExamStudentService {
         }
     }
     
-    public ExamStudentDto delete(Long id) throws Exception {
-        
+    public String delete(Long id) throws Exception {
         try {
-            ExamStudentDto examStudent = modelMapper.map(examStudentRepository.findById(id).get(), 
-                    ExamStudentDto.class);
             examStudentRepository.deleteById(id);
-            return examStudent;
+            return "ExamStudent deleted sucessfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }
 }

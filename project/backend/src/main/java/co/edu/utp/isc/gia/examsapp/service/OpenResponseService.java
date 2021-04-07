@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import co.edu.utp.isc.gia.examsapp.data.repository.OpenResponseRepository;
 import co.edu.utp.isc.gia.examsapp.validators.OpenResponseValidator;
+import java.io.IOException;
 
 /**
  *
@@ -35,13 +36,26 @@ public class OpenResponseService {
         this.openResponseValidator = openResponseValidator;
     }
     
-    public OpenResponseDto save(OpenResponseDto openResponse) throws Exception {        
+    public OpenResponseDto save(OpenResponseDto openResponseDto) throws Exception {        
         try {
-            this.openResponseValidator.setopenResponse(openResponse);
+            this.openResponseValidator.setOpenResponse(openResponseDto);
+            this.openResponseValidator.setExceptions("");
             this.openResponseValidator.performValidationsExcept("id");
-            OpenResponse auxStud = modelMapper.map(openResponse, OpenResponse.class);
-            auxStud = openResponseRepository.save(auxStud);
-            return modelMapper.map(auxStud, OpenResponseDto.class);
+            String openResponseExceptions = this.openResponseValidator.getExceptions();
+            
+            if (openResponseExceptions.length() > 0) {
+                throw new IOException(openResponseExceptions);
+            }
+            
+            OpenResponse openResponse = modelMapper.map(openResponseDto, OpenResponse.class);
+            openResponse = openResponseRepository.save(openResponse);
+            
+            if (openResponse != null) {
+                return modelMapper.map(openResponse, OpenResponseDto.class);                
+            } else {
+                return null;
+            }
+
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -62,8 +76,12 @@ public class OpenResponseService {
     
     public OpenResponseDto findOne(Long id) throws Exception {
         try {
-            return modelMapper.map(openResponseRepository.findById(id).get(), 
-                OpenResponseDto.class);
+            OpenResponse openResponse = openResponseRepository.findById(id).get();
+            if (openResponse != null) {
+                return modelMapper.map(openResponse, OpenResponseDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -71,13 +89,17 @@ public class OpenResponseService {
         }
     }
 
-    public OpenResponseDto findByExamStudentAndQuestion(
-            Long examStudentId, 
+    public OpenResponseDto findByExamStudentAndQuestion(Long examStudentId, 
             Long questionId) throws Exception {
         try {
-            return modelMapper.map(
-                    openResponseRepository.findByExamStudentIdAndQuestionId(
-                            examStudentId, questionId), OpenResponseDto.class);
+            OpenResponse openResponse = 
+                    openResponseRepository.findByExamStudentIdAndQuestionId(examStudentId, questionId);
+            
+            if (openResponse != null) {
+                return modelMapper.map(openResponse, OpenResponseDto.class);                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -85,13 +107,25 @@ public class OpenResponseService {
         }
     }
     
-    public OpenResponseDto update(OpenResponseDto openResponse) throws Exception {
+    public OpenResponseDto update(OpenResponseDto openResponseDto) throws Exception {
         try {
-            this.openResponseValidator.setopenResponse(openResponse);
+            this.openResponseValidator.setOpenResponse(openResponseDto);
+            this.openResponseValidator.setExceptions("");
             this.openResponseValidator.performValidations();
-            OpenResponse auxStud = openResponseRepository.save(modelMapper.map(openResponse, 
-                    OpenResponse.class));
-            return modelMapper.map(auxStud, OpenResponseDto.class);
+            String openResponseExceptions = this.openResponseValidator.getExceptions();
+            
+            if (openResponseExceptions.length() > 0) {
+                throw new IOException(openResponseExceptions);
+            }
+            
+            OpenResponse openResponse = modelMapper.map(openResponseDto, OpenResponse.class);
+            openResponse = openResponseRepository.save(openResponse);
+            
+            if (openResponse != null) {
+                return modelMapper.map(openResponse, OpenResponseDto.class);                
+            } else {
+                return null;
+            }
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -99,17 +133,15 @@ public class OpenResponseService {
         }
     }
     
-    public OpenResponseDto delete(Long id) throws Exception {
+    public String delete(Long id) throws Exception {
         
         try {
-            OpenResponseDto openResponse = modelMapper.map(openResponseRepository.findById(id).get(), 
-                    OpenResponseDto.class);
             openResponseRepository.deleteById(id);
-            return openResponse;
+            return "Open response deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
+            throw e;
         }
     }
 }
