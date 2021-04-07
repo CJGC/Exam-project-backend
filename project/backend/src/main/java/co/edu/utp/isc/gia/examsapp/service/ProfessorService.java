@@ -35,20 +35,26 @@ public class ProfessorService {
         this.ProfessorValidator = professorValidator;
     }
     
-    public ProfessorDto save(ProfessorDto professor) throws Exception {        
+    public ProfessorDto save(ProfessorDto professorDto) throws Exception {        
         try {
-            this.ProfessorValidator.setProfessor(professor);
+            this.ProfessorValidator.setExceptions("");
+            this.ProfessorValidator.setProfessor(professorDto);
             this.ProfessorValidator.performValidationsExcept("id");
             
             if (this.ProfessorValidator.getExceptions().length() > 0) {
                 String exceptions = this.ProfessorValidator.getExceptions();
-                this.ProfessorValidator.setExceptions("");
                 throw new Exception(exceptions);
             }
             
-            Professor auxProf = modelMapper.map(professor ,Professor.class);
-            auxProf = userRepository.save(auxProf);
-            return modelMapper.map(auxProf, ProfessorDto.class);
+            Professor professor = modelMapper.map(professorDto ,Professor.class);
+            professor = userRepository.save(professor);
+            
+            if (professor != null) {
+                return modelMapper.map(professor, ProfessorDto.class);                
+            } else {
+                return null;
+            }
+
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -72,8 +78,7 @@ public class ProfessorService {
             Professor professor = userRepository.findById(id).get();
             if (professor != null) {
                 return modelMapper.map(professor, ProfessorDto.class);
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -83,20 +88,26 @@ public class ProfessorService {
         }
     }
     
-    public ProfessorDto update(ProfessorDto professor) throws Exception {
+    public ProfessorDto update(ProfessorDto professorDto) throws Exception {
         try {
-            this.ProfessorValidator.setProfessor(professor);
+            this.ProfessorValidator.setExceptions("");
+            this.ProfessorValidator.setProfessor(professorDto);
             this.ProfessorValidator.performValidations();
             
             if (this.ProfessorValidator.getExceptions().length() > 0) {
                 String exceptions = this.ProfessorValidator.getExceptions();
-                this.ProfessorValidator.setExceptions("");
                 throw new Exception(exceptions);
             }
             
-            Professor auxProf = userRepository.save(modelMapper.map(professor, 
+            Professor professor = userRepository.save(modelMapper.map(professorDto, 
                     Professor.class));
-            return modelMapper.map(auxProf, ProfessorDto.class);
+            
+            if (professor != null) {
+                return modelMapper.map(professor, ProfessorDto.class);                
+            } else {
+                return null;
+            }
+
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
