@@ -7,6 +7,7 @@ package co.edu.utp.isc.gia.examsapp.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.service.StudentService;
 import co.edu.utp.isc.gia.examsapp.web.dto.StudentDto;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,72 +28,79 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("student")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class StudentController {
-    
+
     private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-    
+
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody StudentDto student) throws Exception {
+    public ResponseEntity<?> save(@RequestBody StudentDto studentDto) throws Exception {
         try {
-            student = studentService.save(student);
-            return new ResponseEntity<>(student, HttpStatus.OK);
-        }
-        catch(Exception e) {
+            studentDto = studentService.save(studentDto);
+            return new ResponseEntity<>(studentDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping
     public ResponseEntity<?> listAll() throws Exception {
-        List<StudentDto> students = studentService.listAll();
-        return new ResponseEntity<>(students, HttpStatus.OK);
+        try {
+            List<StudentDto> studentsDto = studentService.listAll();
+            return new ResponseEntity<>(studentsDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
-        StudentDto student = studentService.findOne(id);
-        if (student == null) return new ResponseEntity<> ( 
-                "Student doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(student, HttpStatus.OK);
+        try {
+            StudentDto studentDto = studentService.findOne(id);
+            return new ResponseEntity<>(studentDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
+
     @GetMapping("/byIdentCard")
     public ResponseEntity<?> findByIdentificationCard(
             @RequestParam("id") String identificationCard) throws Exception {
         try {
-            StudentDto student = studentService.findByIdentificationCard(identificationCard);
-            return new ResponseEntity<>(student, HttpStatus.OK);
-        }
-        catch(Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            StudentDto studentDto = studentService.findByIdentificationCard(identificationCard);
+            return new ResponseEntity<>(studentDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PutMapping()
-    public ResponseEntity<?> update(@RequestBody StudentDto student) 
-            throws Exception {
-        StudentDto prof;
+    public ResponseEntity<?> update(@RequestBody StudentDto studentDto) throws Exception {
         try {
-            prof = studentService.update(student);
-        }
-        catch(Exception e) {
+            studentDto = studentService.update(studentDto);
+            return new ResponseEntity<>(studentDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(prof, HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete (@PathVariable("id") Long id)  
-            throws Exception{
-        StudentDto student = studentService.delete(id);
-        if (student == null) return new ResponseEntity<>(
-                "Student doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(student, HttpStatus.OK);
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) throws Exception {
+        try {
+            String message = studentService.delete(id);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
+
 }

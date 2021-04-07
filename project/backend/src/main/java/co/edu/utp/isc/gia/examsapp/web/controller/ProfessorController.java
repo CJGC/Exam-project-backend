@@ -7,6 +7,7 @@ package co.edu.utp.isc.gia.examsapp.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.service.ProfessorService;
 import co.edu.utp.isc.gia.examsapp.web.dto.ProfessorDto;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,75 +28,80 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("professor")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class ProfessorController {
-    
-    private final ProfessorService userService;
+
+    private final ProfessorService professorService;
 
     public ProfessorController(ProfessorService userService) {
-        this.userService = userService;
+        this.professorService = userService;
     }
-    
+
     @PostMapping // POST http://localhost:8080/user
-    public ResponseEntity<?> save(@RequestBody ProfessorDto professor) throws Exception {
+    public ResponseEntity<?> save(@RequestBody ProfessorDto professorDto) throws Exception {
         try {
-            professor = userService.save(professor);
-            return new ResponseEntity<>(professor, HttpStatus.OK);
-        }
-        catch(Exception e) {
+            professorDto = professorService.save(professorDto);
+            return new ResponseEntity<>(professorDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/all")
     public ResponseEntity<?> listAll() throws Exception {
-        List<ProfessorDto> users = userService.listAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        try {
+            List<ProfessorDto> users = professorService.listAll();
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
-        ProfessorDto professor = userService.findOne(id);
-        if (professor == null) return new ResponseEntity<> ( 
-                "Professor doesn't exist", HttpStatus.OK);
-        return new ResponseEntity<>(professor, HttpStatus.OK);
+        try {
+            ProfessorDto professorDto = professorService.findOne(id);
+            return new ResponseEntity<>(professorDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
+
     @GetMapping("/byusername")
-    public ResponseEntity<?> findByUsername (
-            @RequestParam(value="username") String username) throws Exception {
+    public ResponseEntity<?> findByUsername(
+            @RequestParam(value = "username") String username) throws Exception {
         try {
-            ProfessorDto professor = userService.findByUsername(username);
-            return new ResponseEntity<>(professor, HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            ProfessorDto professorDto = professorService.findByUsername(username);
+            return new ResponseEntity<>(professorDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody ProfessorDto professor) 
+    public ResponseEntity<?> update(@RequestBody ProfessorDto professor)
             throws Exception {
-        ProfessorDto prof;
         try {
-            prof = userService.update(professor);
-        }
-        catch(Exception e) {
+            ProfessorDto professsorDto = professorService.update(professor);
+            return new ResponseEntity<>(professsorDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(prof, HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete (@PathVariable("id") Long id)  
-            throws Exception{
+    public ResponseEntity<?> delete(@PathVariable("id") Long id)
+            throws Exception {
         try {
-            String response = userService.delete(id);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        catch(Exception e) {
-            return new ResponseEntity<>("Error during delete request", HttpStatus.BAD_REQUEST);   
+            String message = professorService.delete(id);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
 }

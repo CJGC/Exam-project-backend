@@ -7,6 +7,7 @@ package co.edu.utp.isc.gia.examsapp.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.service.OpenResponseService;
 import co.edu.utp.isc.gia.examsapp.web.dto.OpenResponseDto;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,75 +28,82 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("openResponse")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class OpenResponseController {
-    
+
     private final OpenResponseService openResponseService;
 
     public OpenResponseController(OpenResponseService openResponseService) {
         this.openResponseService = openResponseService;
     }
-    
+
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody OpenResponseDto openResponse) throws Exception {
+    public ResponseEntity<?> save(@RequestBody OpenResponseDto openResponseDto) throws Exception {
         try {
-            openResponse = openResponseService.save(openResponse);
-            return new ResponseEntity<>(openResponse, HttpStatus.OK);
-        }
-        catch(Exception e) {
+            openResponseDto = openResponseService.save(openResponseDto);
+            return new ResponseEntity<>(openResponseDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping
     public ResponseEntity<?> listAll() throws Exception {
-        List<OpenResponseDto> openResponses = openResponseService.listAll();
-        return new ResponseEntity<>(openResponses, HttpStatus.OK);
+        try {
+            List<OpenResponseDto> openResponsesDto = openResponseService.listAll();
+            return new ResponseEntity<>(openResponsesDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
+
     @GetMapping("/byexamstudentandquestion")
     public ResponseEntity<?> findByExamStudentAndQuestion(
             @RequestParam("examStudentId") Long examStudentId,
             @RequestParam("questionId") Long questionId) throws Exception {
         try {
-            OpenResponseDto examStudent = 
-                    openResponseService.findByExamStudentAndQuestion(examStudentId, 
-                            questionId);
-            return new ResponseEntity<>(examStudent, HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            OpenResponseDto openResponseDto = openResponseService.findByExamStudentAndQuestion(examStudentId, questionId);
+            return new ResponseEntity<>(openResponseDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
-        OpenResponseDto openResponse = openResponseService.findOne(id);
-        if (openResponse == null) return new ResponseEntity<> ( 
-                "OpenResponse doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(openResponse, HttpStatus.OK);
-    }
-    
-    @PutMapping
-    public ResponseEntity<?> update(@RequestBody OpenResponseDto openResponse) 
-            throws Exception {
-        OpenResponseDto prof;
         try {
-            prof = openResponseService.update(openResponse);
+            OpenResponseDto openResponseDto = openResponseService.findOne(id);
+            return new ResponseEntity<>(openResponseDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        catch(Exception e) {
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody OpenResponseDto openResponseDto)
+            throws Exception {
+        try {
+            openResponseDto = openResponseService.update(openResponseDto);
+            return new ResponseEntity<>(openResponseDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(prof, HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete (@PathVariable("id") Long id)  
-            throws Exception{
-        OpenResponseDto openResponse = openResponseService.delete(id);
-        if (openResponse == null) return new ResponseEntity<>(
-                "OpenResponse doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(openResponse, HttpStatus.OK);
+    public ResponseEntity<?> delete(@PathVariable("id") Long id)
+            throws Exception {
+        try {
+            String message = openResponseService.delete(id);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
-    
+
 }

@@ -7,7 +7,7 @@ package co.edu.utp.isc.gia.examsapp.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.service.SelectedResponseService;
 import co.edu.utp.isc.gia.examsapp.web.dto.SelectedResponseDto;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,80 +28,80 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("selectedResponse")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class SelectedResponseController {
-    
+
     private final SelectedResponseService selectedResponseService;
 
     public SelectedResponseController(SelectedResponseService selectedResponseService) {
         this.selectedResponseService = selectedResponseService;
     }
-    
+
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody SelectedResponseDto selectedResponse) throws Exception {
+    public ResponseEntity<?> save(@RequestBody SelectedResponseDto selectedResponseDto) throws Exception {
         try {
-            selectedResponse = selectedResponseService.save(selectedResponse);
-            return new ResponseEntity<>(selectedResponse, HttpStatus.OK);
-        }
-        catch(Exception e) {
+            selectedResponseDto = selectedResponseService.save(selectedResponseDto);
+            return new ResponseEntity<>(selectedResponseDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping
     public ResponseEntity<?> listAll() throws Exception {
-        List<SelectedResponseDto> selectedResponses = selectedResponseService.listAll();
-        return new ResponseEntity<>(selectedResponses, HttpStatus.OK);
+        try {
+            List<SelectedResponseDto> selectedResponsesDto = selectedResponseService.listAll();
+            return new ResponseEntity<>(selectedResponsesDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
+
     @GetMapping("/byexamstudentandquestion")
-    public ResponseEntity<?> findByExamStudentAndQuestion(
-            @RequestParam("examStudentId") Long examStudentId,
+    public ResponseEntity<?> findByExamStudentAndQuestion(@RequestParam("examStudentId") Long examStudentId,
             @RequestParam("ansOptId") Long ansOptId) throws Exception {
         try {
-            SelectedResponseDto selectedResponse;
-            selectedResponse = selectedResponseService.findByExamStudentAndAnsOpt(
+            SelectedResponseDto selectedResponseDto = selectedResponseService.findByExamStudentAndAnsOpt(
                     examStudentId, ansOptId);
-            if (selectedResponse != null) {
-                return new ResponseEntity<>(selectedResponse, HttpStatus.OK);    
-            }
-            else {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(selectedResponseDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findOne(@PathVariable("id") Long id) throws Exception {
-        SelectedResponseDto selectedResponse = selectedResponseService.findOne(id);
-        if (selectedResponse == null) return new ResponseEntity<> ( 
-                "SelectedResponse doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(selectedResponse, HttpStatus.OK);
-    }
-    
-    @PutMapping
-    public ResponseEntity<?> update(@RequestBody SelectedResponseDto selectedResponse) 
-            throws Exception {
-        SelectedResponseDto prof;
         try {
-            prof = selectedResponseService.update(selectedResponse);
+            SelectedResponseDto selectedResponseDto = selectedResponseService.findOne(id);
+            return new ResponseEntity<>(selectedResponseDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        catch(Exception e) {
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody SelectedResponseDto selectedResponseDto)
+            throws Exception {
+        try {
+            selectedResponseDto = selectedResponseService.update(selectedResponseDto);
+            return new ResponseEntity<>(selectedResponseDto, HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(prof, HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete (@PathVariable("id") Long id)  
-            throws Exception{
-        SelectedResponseDto selectedResponse = selectedResponseService.delete(id);
-        if (selectedResponse == null) return new ResponseEntity<>(
-                "SelectedResponse doesn't exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(selectedResponse, HttpStatus.OK);
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) throws Exception {
+        try {
+            String message = selectedResponseService.delete(id);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
+
 }

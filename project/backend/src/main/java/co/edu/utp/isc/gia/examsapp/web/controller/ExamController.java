@@ -7,6 +7,7 @@ package co.edu.utp.isc.gia.examsapp.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.service.ExamService;
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,81 +28,78 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("exam")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class ExamController {
-    
+
     private final ExamService examService;
-    
-    ExamController(ExamService examService) {
+
+    public ExamController(ExamService examService) {
         this.examService = examService;
     }
-    
+
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody ExamDto exam) throws Exception {
+    public ResponseEntity<?> save(@RequestBody ExamDto examDto) throws Exception {
         try {
-            exam = examService.save(exam);
-            return new ResponseEntity<>(exam, HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            examDto = examService.save(examDto);
+            return new ResponseEntity<>(examDto, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/all")
     public ResponseEntity<?> listAll() throws Exception {
         try {
-            List<ExamDto> exams = examService.listAll();
-            return new ResponseEntity<>(exams, HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            List<ExamDto> examsDto = examService.listAll();
+            return new ResponseEntity<>(examsDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/byprofessor")
     public ResponseEntity<?> findByProfessor(@RequestParam("id") Long professorId) throws Exception {
         try {
-            List<ExamDto> exams = examService.findByProfessor(professorId);
-            return new ResponseEntity<>(exams, HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            List<ExamDto> examsByProfessorDto = examService.findByProfessor(professorId);
+            return new ResponseEntity<>(examsByProfessorDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/bylink")
     public ResponseEntity<?> findByLink(@RequestParam("id") String link) throws Exception {
         try {
-            ExamDto exam = examService.findByLink(link);
-            return new ResponseEntity<>(exam, HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            ExamDto examDto = examService.findByLink(link);
+            return new ResponseEntity<>(examDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-   @PutMapping
-    public ResponseEntity<?> update(@RequestBody ExamDto exam) 
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody ExamDto examDto)
             throws Exception {
-        ExamDto _exam;
         try {
-            _exam = examService.update(exam);
-            return new ResponseEntity<>(_exam, HttpStatus.OK);
-        }
-        catch(Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            examDto = examService.update(examDto);
+            return new ResponseEntity<>(examDto, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete (@PathVariable("id") Long id)  
-            throws Exception{
+    public ResponseEntity<?> delete(@PathVariable("id") Long id)
+            throws Exception {
         try {
-            ExamDto exam = examService.delete(id);
-            return new ResponseEntity<>(exam, HttpStatus.OK);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            String message = examService.delete(id);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
