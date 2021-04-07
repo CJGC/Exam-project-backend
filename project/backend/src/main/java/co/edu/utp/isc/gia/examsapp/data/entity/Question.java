@@ -6,7 +6,6 @@
 package co.edu.utp.isc.gia.examsapp.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -48,7 +47,7 @@ public class Question implements Serializable  {
     @Column(precision=3, scale=2)
     private Double weight;
     private String description;
-    private byte[] questionImage;
+    private String questionImage;
     
     @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     @JoinColumn
