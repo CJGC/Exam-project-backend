@@ -7,6 +7,7 @@ package co.edu.utp.isc.gia.examsapp.validators;
 
 //import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.ProfessorDto;
+import java.io.IOException;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,11 +23,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProfessorValidator {
     private ProfessorDto professor;
-    private String exceptions;
+    private String exceptions = "";
             
     public void isNull() throws Exception {
         if (this.professor == null) {
-            throw new Exception("Professor object is null");
+            throw new IOException("Professor object is null\n");
         }
      }
     
