@@ -59,7 +59,7 @@ public class ProfessorControllerTest {
         
         ResponseEntity<?> response = null;
         ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Professor object is null", 
+                new ResponseEntity<>("Professor object is null\n", 
                         HttpStatus.BAD_REQUEST);
         
         ProfessorDto professor = null;
@@ -213,7 +213,7 @@ public class ProfessorControllerTest {
         
         ResponseEntity<?> response = null;
         ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Professor object is null", 
+                new ResponseEntity<>("Professor object is null\n", 
                         HttpStatus.BAD_REQUEST);
         
         ProfessorDto professor = null;
@@ -375,7 +375,7 @@ public class ProfessorControllerTest {
         catch (Exception e) {}
         
         ResponseEntity<?> expResult = 
-                new ResponseEntity<> ("Professor doesn't exist", 
+                new ResponseEntity<> (null, 
                         HttpStatus.OK);
         
         assertEquals(expResult, response);
