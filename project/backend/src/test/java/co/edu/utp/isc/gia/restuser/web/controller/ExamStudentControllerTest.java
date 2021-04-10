@@ -7,7 +7,7 @@ package co.edu.utp.isc.gia.restuser.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.data.entity.Exam;
 import co.edu.utp.isc.gia.examsapp.data.entity.ExamStudent;
-import co.edu.utp.isc.gia.examsapp.web.controller.ExamStudentController;
+import co.edu.utp.isc.gia.examsapp.data.entity.Professor;
 import co.edu.utp.isc.gia.examsapp.data.entity.Student;
 import co.edu.utp.isc.gia.examsapp.service.ExamStudentService;
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamStudentDto;
@@ -25,460 +25,602 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import co.edu.utp.isc.gia.examsapp.data.repository.ExamStudentRepository;
 import co.edu.utp.isc.gia.examsapp.validators.ExamStudentValidator;
+import co.edu.utp.isc.gia.examsapp.web.controller.ExamStudentController;
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
+import co.edu.utp.isc.gia.examsapp.web.dto.ProfessorDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.StudentDto;
+import static com.shazam.shazamcrest.MatcherAssert.assertThat;
+import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
+import static org.mockito.Mockito.verify;
 
-/**
+
+/*
  *
  * @author CJ
  */
-
-
 public class ExamStudentControllerTest {
-    
+
     public ExamStudentControllerTest() {
     }
 
-    private ExamStudentRepository examStudentRepository; 
-    private ExamStudentController examStudentController;
-    private ExamStudentValidator examStudentValidator;
-/*    
+    private ExamStudentRepository ExamStudentRepository;
+    private ExamStudentController ExamStudentController;
+
     @Before
     public void init() {
-        examStudentRepository = Mockito.mock(ExamStudentRepository.class);
+        ExamStudentRepository = Mockito.mock(ExamStudentRepository.class);
         ModelMapper modelMapper = new ModelMapper();
-        examStudentValidator = new ExamStudentValidator();
-        ExamStudentService examStudentService = new ExamStudentService(examStudentRepository, 
-                modelMapper, examStudentValidator);
-        examStudentController = new ExamStudentController(examStudentService);
+        ExamStudentService ExamStudentService = new ExamStudentService(ExamStudentRepository,
+                modelMapper, new ExamStudentValidator());
+        ExamStudentController = new ExamStudentController(ExamStudentService);
     }
- */
-    /**
+
+    /*
      * Test of save method, of class ExamStudentController.
      */
-/*
-   @Test
+    
+    @Test
     public void testSaveExamStudentNullObject() {
-                ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent object is null", 
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>("ExamStudent object is null\n",
                         HttpStatus.BAD_REQUEST);
-        
-        ExamStudentDto examStudent = null;
-        
+
+        ExamStudentDto examstudent = null;
+
         try {
-            response = this.examStudentController.save(examStudent);
+            response = ExamStudentController.save(examstudent);
+        } catch (Exception e) {
         }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
+
+        assertEquals(expResult, response);
     }
 
     @Test
-    public void testSaveExamStudentNullDefinitiveGrade() {
-        ExamDto exam = new ExamDto();
-        StudentDto student = new StudentDto();
-        
-        ExamStudentDto examStudent = new ExamStudentDto(null, null, null, 
-                student, exam);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent definitive grade is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.examStudentController.save(examStudent);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-        
-    }
+    public void testSaveExamStudentNullProperties() {
+        ExamStudentDto examstudentDto = new ExamStudentDto(null, null, null, null);
 
-    @Test
-    public void testSaveExamStudentNullStudent() {
-        ExamDto exam = new ExamDto();
-        
-        ExamStudentDto examStudent = new ExamStudentDto(null, 0.0, null, 
-                null, exam);
-        
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent student is null", 
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "ExamStudent definitive grade is null\n"
+                        + "ExamStudent student is null\n"
+                        + "ExamStudent exam is null\n",
                         HttpStatus.BAD_REQUEST);
-        
+
         try {
-            response = this.examStudentController.save(examStudent);
+            response = this.ExamStudentController.save(examstudentDto);
+        } catch (Exception e) {
         }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
+
+        assertEquals(expResult, response);
+
     }
     
     @Test
-    public void testSaveExamStudentNullExam() {
-        StudentDto student = new StudentDto();
+    public void testSaveExamStudentParentsWithNullProperties() {
+        ProfessorDto professorDto = new ProfessorDto(null, null, null, null, null, null, null);
+        StudentDto studentDto = new StudentDto(null, null, null, null);
+        ExamDto examDto = new ExamDto(null, null, null, null, null, null, professorDto);
         
-        ExamStudentDto examStudent = new ExamStudentDto(null, 0.0, null, 
-                student, null);
-        
+        ExamStudentDto examstudentDto = new ExamStudentDto(null, null, studentDto, examDto);
+
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent exam is null", 
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "ExamStudent definitive grade is null\n"
+                        + "Student's id is null\n"
+                        + "Student's identification card is null\n"
+                        + "Student's name is null\n"
+                        + "Student's lastname is null\n"
+                        + "Exam id is null\n"
+                        + "Exam name is null\n"
+                        + "Exam link is null\n"
+                        + "Exam maxgrade is null\n"
+                        + "Exam description is null\n"
+                        + "Exam durability is null\n"
+                        + "Professor's id is null\n"
+                        + "Professor's identification card is null\n"
+                        + "Professor's name is null\n"
+                        + "Professor's lastname is null\n"
+                        + "Professor's email is null\n"
+                        + "Professor's username is null\n"
+                        + "Professor's password is null\n",
                         HttpStatus.BAD_REQUEST);
-        
+
         try {
-            response = this.examStudentController.save(examStudent);
+            response = this.ExamStudentController.save(examstudentDto);
+        } catch (Exception e) {
         }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
+
+        assertEquals(expResult, response);
+
     }
     
     @Test
-    public void testSave() {
-        Exam exam = new Exam();
-        Student student = new Student();
-        
-        ExamStudent resulted = new ExamStudent(null, 5.0, null, 
-                student, exam);
+    public void testSaveExamStudentEmptyProperties() {
+        ProfessorDto professorDto = new ProfessorDto(0L, "", "", "", "", "", "");
+        StudentDto studentDto = new StudentDto(0L, "", "", "");
+        ExamDto examDto = new ExamDto(0L, "", "",0.0, "", 0, professorDto);
+        ExamStudentDto examstudentDto = new ExamStudentDto(0L, 0.0, studentDto, examDto);
 
-        when(examStudentRepository.save(any(ExamStudent.class))).thenReturn(resulted);
-        
-        ExamDto examDto = new ExamDto();
-        StudentDto studentDto = new StudentDto();
-        
-        ExamStudentDto examStudent = new ExamStudentDto(null,5.0, null, studentDto, examDto);
-        
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = new ResponseEntity<>(examStudent, HttpStatus.OK);
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "ExamStudent definitive grade is invalid\n"
+                        + "Student's id is invalid\n"
+                        + "Student's identification card is empty\n"
+                        + "Student's name is empty\n"
+                        + "Student's lastname is empty\n"
+                        + "Exam id is invalid\n"
+                        + "Exam name is empty\n"
+                        + "Exam link is empty\n"
+                        + "Exam maxgrade is invalid\n"
+                        + "Exam description is empty\n"
+                        + "Exam durability is invalid\n"
+                        + "Professor's id is invalid\n"
+                        + "Professor's identification card is empty\n"
+                        + "Professor's name is empty\n"
+                        + "Professor's lastname is empty\n"
+                        + "Professor's email is empty\n"
+                        + "Professor's username is empty\n"
+                        + "Professor's password is empty\n",
+                        HttpStatus.BAD_REQUEST);
         try {
-            response = examStudentController.save(examStudent);
-            
+            response = this.ExamStudentController.save(examstudentDto);
+        } catch (Exception e) {
         }
-        catch(Exception e) { }
+
+        assertEquals(expResult, response);
+    }
+
+    @Test
+    public void testSaveExamStudentInvalidProperties() {
+
+        ExamStudentDto examstudent = new ExamStudentDto(0L, 0.0, null, null);
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "ExamStudent definitive grade is invalid\n"
+                        + "ExamStudent student is null\n"
+                        + "ExamStudent exam is null\n",
+                        HttpStatus.BAD_REQUEST);
+
+        try {
+            response = this.ExamStudentController.save(examstudent);
+        } catch (Exception e) {
+        }
+
+        assertEquals(expResult, response);
+    }
+
+    @Test
+    public void testSaveExamStudentValidInfo() {
+        Professor professor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password", null);
+        Student student = new Student(1L, "1088","Esteban", "Castaño", null);
+        Exam exam = new Exam(1L, "Exam name", "URL",0.1, "Exam description", 3600, professor, null, null);
+        ExamStudent examStudent = new ExamStudent(1L, 5.0, null, student, exam);
+        when(ExamStudentRepository.save(any(ExamStudent.class))).thenReturn(examStudent);
+
+        // input data
+        ProfessorDto inputProfessorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto inputStudentDto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        ExamDto inputExamDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, inputProfessorDto);
+        ExamStudentDto inputExamstudentDto = new ExamStudentDto(1L, 5.0, inputStudentDto, inputExamDto);
         
+        // output data
+        ProfessorDto outputProfessorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto outputStudentDto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        ExamDto outputExamDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, outputProfessorDto);
+        ExamStudentDto outputExamStudentDto = new ExamStudentDto(1L, 5.0, outputStudentDto, outputExamDto);
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult = new ResponseEntity<>(outputExamStudentDto, HttpStatus.OK);
+        try {
+            response = ExamStudentController.save(inputExamstudentDto);
+
+        } catch (Exception e) {}
+
         assertEquals(response.getHeaders(), expResult.getHeaders());
-
         ExamStudentDto bodyFromResponse = (ExamStudentDto) response.getBody();
         ExamStudentDto bodyFromExpResult = (ExamStudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getDefinitiveGrade(), bodyFromExpResult.getDefinitiveGrade());
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
     }
- */
-///* Update method test */    
-/*
-   @Test
-    public void testUpdateExamStudentNullObject() {
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent object is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        ExamStudentDto examStudent = null;
-        
-        try {
-            response = this.examStudentController.update(examStudent);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-
-    @Test
-    public void testUpdateExamStudentNullDefinitiveGrade() {
-        ExamDto exam = new ExamDto();
-        StudentDto student = new StudentDto();
-        
-        ExamStudentDto examStudent = new ExamStudentDto(1L, null, null, 
-                student, exam);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent definitive grade is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.examStudentController.update(examStudent);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-        
-    }
-
-    @Test
-    public void testUpdateExamStudentNullStudent() {
-        ExamDto exam = new ExamDto();
-        
-        ExamStudentDto examStudent = new ExamStudentDto(1L, 0.0, null, 
-                null, exam);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent student is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.examStudentController.update(examStudent);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-    
-    @Test
-    public void testUpdateStudentNullExam() {
-        StudentDto student = new StudentDto();
-        
-        ExamStudentDto examStudent = new ExamStudentDto(1L, 0.0, null, 
-                student, null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent exam is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.examStudentController.update(examStudent);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-        
-    @Test
-    public void testUpdateStudentNullId() {
-        ExamDto exam = new ExamDto();
-        StudentDto student = new StudentDto();
-        
-        ExamStudentDto examStudent = new ExamStudentDto(null, 0.0, null, 
-                student, exam);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("ExamStudent id is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.examStudentController.update(examStudent);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }      
-    
-*/
-    /**
-     * Test of update method, of class ExamStudentController.
-     */
-    
     /*
+        Testing update method
+     */
     @Test
-    public void testUpdate() {
-        Exam exam = new Exam();
-        Student student = new Student();
-        
-        ExamStudent resulted = new ExamStudent(1L, 0.0, null, 
-                student, exam);
+    public void testUpdateExamStudentNullObject() {
 
-        when(examStudentRepository.save(any(ExamStudent.class))).thenReturn(resulted);
-        
-        ExamDto examDto = new ExamDto();
-        StudentDto studentDto = new StudentDto();
-          
-        
-        ExamStudentDto examStudent = new ExamStudentDto(1L, 0.0, null, 
-                studentDto, examDto);   
-        
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = new ResponseEntity<>(examStudent, HttpStatus.OK);
-        try {
-            response = examStudentController.update(examStudent);
-            
-        }
-        catch(Exception e) { }
-        
-        assertEquals(response.getHeaders(), expResult.getHeaders());
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>("ExamStudent object is null\n",
+                        HttpStatus.BAD_REQUEST);
 
-        ExamStudentDto bodyFromResponse = (ExamStudentDto) response.getBody();
-        ExamStudentDto bodyFromExpResult = (ExamStudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getDefinitiveGrade(), bodyFromExpResult.getDefinitiveGrade());
+        ExamStudentDto examstudent = null;
+
+        try {
+            response = ExamStudentController.update(examstudent);
+        } catch (Exception e) {
+        }
+
+        assertEquals(expResult, response);
+    }
+    
+    @Test
+    public void testUpdateExamStudentNullProperties() {
+
+        ExamStudentDto examstudentDto = new ExamStudentDto(null, null, null, null);
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "ExamStudent id is null\n"
+                        +"ExamStudent definitive grade is null\n"
+                        + "ExamStudent student is null\n"
+                        + "ExamStudent exam is null\n",
+                        HttpStatus.BAD_REQUEST);
+
+        try {
+            response = this.ExamStudentController.update(examstudentDto);
+        } catch (Exception e) {
+        }
+
+        assertEquals(expResult, response);
+
     }
 
+    @Test
+    public void testUpdateExamStudentParentsWithNullProperties() {
+        ProfessorDto professorDto = new ProfessorDto(null, null, null, null, null, null, null);
+        StudentDto studentDto = new StudentDto(null, null, null, null);
+        ExamDto examDto = new ExamDto(null, null, null, null, null, null, professorDto);
+        
+        ExamStudentDto examstudentDto = new ExamStudentDto(null, null, studentDto, examDto);
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "ExamStudent id is null\n"
+                        + "ExamStudent definitive grade is null\n"
+                        + "Student's id is null\n"
+                        + "Student's identification card is null\n"
+                        + "Student's name is null\n"
+                        + "Student's lastname is null\n"
+                        + "Exam id is null\n"
+                        + "Exam name is null\n"
+                        + "Exam link is null\n"
+                        + "Exam maxgrade is null\n"
+                        + "Exam description is null\n"
+                        + "Exam durability is null\n"
+                        + "Professor's id is null\n"
+                        + "Professor's identification card is null\n"
+                        + "Professor's name is null\n"
+                        + "Professor's lastname is null\n"
+                        + "Professor's email is null\n"
+                        + "Professor's username is null\n"
+                        + "Professor's password is null\n",
+                        HttpStatus.BAD_REQUEST);
+
+        try {
+            response = this.ExamStudentController.update(examstudentDto);
+        } catch (Exception e) {
+        }
+
+        assertEquals(expResult, response);
+
+    }
+    
+    @Test
+    public void testUpdateExamStudentEmptyProperties() {
+        ProfessorDto professorDto = new ProfessorDto(0L, "", "", "", "", "", "");
+        StudentDto studentDto = new StudentDto(0L, "", "", "");
+        ExamDto examDto = new ExamDto(0L, "", "",0.0, "", 0, professorDto);
+        ExamStudentDto examstudentDto = new ExamStudentDto(0L, 0.0, studentDto, examDto);
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "ExamStudent id is invalid\n"
+                        + "ExamStudent definitive grade is invalid\n"
+                        + "Student's id is invalid\n"
+                        + "Student's identification card is empty\n"
+                        + "Student's name is empty\n"
+                        + "Student's lastname is empty\n"
+                        + "Exam id is invalid\n"
+                        + "Exam name is empty\n"
+                        + "Exam link is empty\n"
+                        + "Exam maxgrade is invalid\n"
+                        + "Exam description is empty\n"
+                        + "Exam durability is invalid\n"
+                        + "Professor's id is invalid\n"
+                        + "Professor's identification card is empty\n"
+                        + "Professor's name is empty\n"
+                        + "Professor's lastname is empty\n"
+                        + "Professor's email is empty\n"
+                        + "Professor's username is empty\n"
+                        + "Professor's password is empty\n",
+                        HttpStatus.BAD_REQUEST);
+        try {
+            response = this.ExamStudentController.update(examstudentDto);
+        } catch (Exception e) {}
+
+        assertEquals(expResult, response);
+    }
+
+    @Test
+    public void testUpdateExamStudentValidInfo() {
+        Professor professor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password", null);
+        Student student = new Student(1L, "1088","Esteban", "Castaño", null);
+        Exam exam = new Exam(1L, "Exam name", "URL",0.1, "Exam description", 3600, professor, null, null);
+        ExamStudent examStudent = new ExamStudent(1L, 5.0, null, student, exam);
+        when(ExamStudentRepository.save(any(ExamStudent.class))).thenReturn(examStudent);
+
+        // input data
+        ProfessorDto inputProfessorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto inputStudentDto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        ExamDto inputExamDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, inputProfessorDto);
+        ExamStudentDto inputExamstudentDto = new ExamStudentDto(1L, 5.0, inputStudentDto, inputExamDto);
+        
+        // output data
+        ProfessorDto outputProfessorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto outputStudentDto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        ExamDto outputExamDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, outputProfessorDto);
+        ExamStudentDto outputExamStudentDto = new ExamStudentDto(1L, 5.0, outputStudentDto, outputExamDto);
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult = new ResponseEntity<>(outputExamStudentDto, HttpStatus.OK);
+        try {
+            response = ExamStudentController.update(inputExamstudentDto);
+
+        } catch (Exception e) {}
+
+        assertEquals(response.getHeaders(), expResult.getHeaders());
+        ExamStudentDto bodyFromResponse = (ExamStudentDto) response.getBody();
+        ExamStudentDto bodyFromExpResult = (ExamStudentDto) expResult.getBody();
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
+    }
+
+    /*
+     * Test for findOne method.
+     */
+   
     @Test
     public void testFindOneNonExistentExamStudent() {
-        when(examStudentRepository.findById(any(Long.class))).thenReturn(null);
+        when(ExamStudentRepository.findById(any(Long.class))).thenReturn(null);
         ResponseEntity<?> response = null;
         try {
-            response = examStudentController.findOne(1L);
+            response = ExamStudentController.findOne(1L);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
-        
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<> ("ExamStudent doesn't exist", 
-                        HttpStatus.NOT_FOUND);
-        
+
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(null,
+                        HttpStatus.OK);
+
         assertEquals(expResult, response);
 
     }
-    */
-    /**
-     * Test of findOne method, of class ExamStudentController.
-     */
-    /*
+
     @Test
     public void testFindOne() {
-      
-        Exam exam = new Exam();
-        Student student = new Student();
+        // beans
+        Professor professor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password", null);
+        Student student = new Student(1L, "1088","Esteban", "Castaño", null);
+        Exam exam = new Exam(1L, "Exam name", "URL",0.1, "Exam description", 3600, professor, null, null);
+        ExamStudent examStudent = new ExamStudent(1L, 5.0, null, student, exam);
+        Optional<ExamStudent> op = Optional.of(examStudent);
+        when(ExamStudentRepository.findById(any(Long.class))).thenReturn(op);
         
-        ExamStudent resulted = new ExamStudent(1L, 0.0, null, 
-                student, exam);
-        Optional<ExamStudent> op = Optional.of(resulted);
-        when(examStudentRepository.findById(any(Long.class))).thenReturn(op);
+        // dto
+        
+        ProfessorDto professorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto studentDto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        ExamDto examDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, professorDto);
+        ExamStudentDto examstudentDto = new ExamStudentDto(1L, 5.0, studentDto, examDto);
         
         ResponseEntity<?> response = null;
         try {
-            response = examStudentController.findOne(1L);
+            response = ExamStudentController.findOne(1L);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
-        
-        ExamDto examDto = new ExamDto();
-        StudentDto studentDto = new StudentDto();
-          
-        
-        ExamStudentDto examStudent = new ExamStudentDto(1L, 0.0, null, 
-                studentDto, examDto);   
-        
-        ResponseEntity<?> expResult = new ResponseEntity<>(examStudent, HttpStatus.OK);
-        
+
+        ResponseEntity<?> expResult = new ResponseEntity<>(examstudentDto, HttpStatus.OK);
+
         assertEquals(expResult.getHeaders(), response.getHeaders());
-        
         ExamStudentDto bodyFromResponse = (ExamStudentDto) response.getBody();
         ExamStudentDto bodyFromExpResult = (ExamStudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getDefinitiveGrade(), bodyFromExpResult.getDefinitiveGrade());
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
     }
 
-
     @Test
-    public void testDeleteNonExistentExamStudent() {
-        when(examStudentRepository.findById(any(Long.class))).thenReturn(null);
+    public void testFindByExamNonExistentExamStudent() {
+        when(ExamStudentRepository.findByExamId(any(Long.class))).thenReturn(null);
         ResponseEntity<?> response = null;
         try {
-            response = examStudentController.delete(1L);
+            response = ExamStudentController.findByExam(1L);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
-        
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<> ("ExamStudent doesn't exist", 
-                        HttpStatus.NOT_FOUND);
-        
+
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(null,
+                        HttpStatus.OK);
+
         assertEquals(expResult, response);
+
     }
-*/
-    /**
-     * Test of delete method, of class ExamStudentController.
-     */
-    /*
+
     @Test
-    public void testDelete() {
-        Exam exam = new Exam();
-        Student student = new Student();
+    public void testFindByExam() {
+        // beans
+        Professor professor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password", null);
+        Student student1 = new Student(1L, "1088","Esteban", "Castaño", null);
+        Student student2 = new Student(2L, "1089", "Carlos", "Villegas", null);
+        Student student3 = new Student(3L, "1090", "Sebastian", "Castrera", null);
         
-        ExamStudent resulted = new ExamStudent(1L, 0.0, null, 
-                student, exam);
-        Optional<ExamStudent> op = Optional.of(resulted);
-        when(examStudentRepository.findById(any(Long.class))).thenReturn(op);
+        Exam exam = new Exam(1L, "Exam name", "URL",0.1, "Exam description", 3600, professor, null, null);
+        ExamStudent examStudent1 = new ExamStudent(1L, 5.0, null, student1, exam);
+        ExamStudent examStudent2 = new ExamStudent(2L, 4.0, null, student2, exam);
+        ExamStudent examStudent3 = new ExamStudent(3L, 4.5, null, student3, exam);
+
+        List<ExamStudent> examStudents = new ArrayList<>();
+        examStudents.add(examStudent1);
+        examStudents.add(examStudent2);
+        examStudents.add(examStudent3);
+        
+        when(ExamStudentRepository.findByExamId(any(Long.class))).thenReturn(examStudents);
+        
+        // dto
+        ProfessorDto professorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto student1Dto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        StudentDto student2Dto = new StudentDto(2L, "1089", "Carlos", "Villegas");
+        StudentDto student3Dto = new StudentDto(3L, "1090", "Sebastian", "Castrera");
+        
+        ExamDto examDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, professorDto);
+        ExamStudentDto examStudent1Dto = new ExamStudentDto(1L, 5.0, student1Dto, examDto);
+        ExamStudentDto examStudent2Dto = new ExamStudentDto(2L, 4.0, student2Dto, examDto);
+        ExamStudentDto examStudent3Dto = new ExamStudentDto(3L, 4.5, student3Dto, examDto);
+
+        List<ExamStudentDto> examStudentsDto = new ArrayList<>();
+        examStudentsDto.add(examStudent1Dto);
+        examStudentsDto.add(examStudent2Dto);
+        examStudentsDto.add(examStudent3Dto);
+        
         
         ResponseEntity<?> response = null;
         try {
-            response = examStudentController.delete(1L);
+            response = ExamStudentController.findByExam(1L);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
-        
-        ExamDto examDto = new ExamDto();
-        StudentDto studentDto = new StudentDto();
-          
-        
-        ExamStudentDto examStudent = new ExamStudentDto(1L, 0.0, null, 
-                studentDto, examDto);
-        ResponseEntity<?> expResult = new ResponseEntity<>(examStudent, HttpStatus.OK);
-        
+
+        ResponseEntity<?> expResult = new ResponseEntity<>(examStudentsDto, HttpStatus.OK);
+
         assertEquals(expResult.getHeaders(), response.getHeaders());
+        List<ExamStudentDto> bodyFromResponse = (List<ExamStudentDto>) response.getBody();
+        List<ExamStudentDto> bodyFromExpResult = (List<ExamStudentDto>) expResult.getBody();
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
+    }
+    
+    
+    @Test
+    public void testfindByStudentNonExistentExamStudent() {
+        when(ExamStudentRepository.findByStudentId(any(Long.class))).thenReturn(null);
+        ResponseEntity<?> response = null;
+        try {
+            response = ExamStudentController.findByStudent(1L);
+        } catch (Exception e) {
+        }
+
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(null,
+                        HttpStatus.OK);
+
+        assertEquals(expResult, response);
+
+    }
+
+    @Test
+    public void testFindByfindByStudent() {
+        // beans
+        Professor professor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password", null);
+        Student student = new Student(1L, "1088","Esteban", "Castaño", null);
+        Exam exam = new Exam(1L, "Exam name", "URL",0.1, "Exam description", 3600, professor, null, null);
+        ExamStudent examStudent = new ExamStudent(1L, 5.0, null, student, exam);
         
+        when(ExamStudentRepository.findByStudentId(any(Long.class))).thenReturn(examStudent);
+        
+        // dto
+        ProfessorDto professorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto studentDto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        ExamDto examDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, professorDto);
+        ExamStudentDto examStudentDto = new ExamStudentDto(1L, 5.0, studentDto, examDto);
+        
+        ResponseEntity<?> response = null;
+        try {
+            response = ExamStudentController.findByStudent(1L);
+        } catch (Exception e) {
+        }
+
+        ResponseEntity<?> expResult = new ResponseEntity<>(examStudentDto, HttpStatus.OK);
+
+        assertEquals(expResult.getHeaders(), response.getHeaders());
         ExamStudentDto bodyFromResponse = (ExamStudentDto) response.getBody();
         ExamStudentDto bodyFromExpResult = (ExamStudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getDefinitiveGrade(), bodyFromExpResult.getDefinitiveGrade());
-        
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
     }
-*/
-    /**
+    
+    /*
+     * Test for delete method
+     */
+    
+    @Test
+    public void testDeleteExamStudent() {
+        ResponseEntity<?> response = null;
+        try {
+            response = ExamStudentController.delete(1L);
+        } catch (Exception e) {
+        }
+
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>("ExamStudent deleted successfully",
+                        HttpStatus.OK);
+
+        assertEquals(expResult, response);
+        verify(ExamStudentRepository).deleteById(any(Long.class));
+    }
+    /*
      * Test of listAll method, of class ExamStudentController.
      */
-    /*
+    
     @Test
     public void testListAll() {
+        Professor professor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password", null);
+        Student student1 = new Student(1L, "1088","Esteban", "Castaño", null);
+        Student student2 = new Student(2L, "1089", "Carlos", "Villegas", null);
+        Student student3 = new Student(3L, "1090", "Sebastian", "Castrera", null);
         
-        Exam exam = new Exam();
-        Student student = new Student();
-        ArrayList<ExamStudent> resulted = new ArrayList<>();
+        Exam exam = new Exam(1L, "Exam name", "URL",0.1, "Exam description", 3600, professor, null, null);
+        ExamStudent examStudent1 = new ExamStudent(1L, 5.0, null, student1, exam);
+        ExamStudent examStudent2 = new ExamStudent(2L, 4.0, null, student2, exam);
+        ExamStudent examStudent3 = new ExamStudent(3L, 4.5, null, student3, exam);
+
+        List<ExamStudent> examStudents = new ArrayList<>();
+        examStudents.add(examStudent1);
+        examStudents.add(examStudent2);
+        examStudents.add(examStudent3);
         
-        resulted.add(new ExamStudent(1L, 0.0, null, 
-                student, exam));
-        resulted.add(new ExamStudent(2L, 0.0, null, 
-                student, exam));
-        resulted.add(new ExamStudent(3L, 0.0, null, 
-                student, exam));
+        when(ExamStudentRepository.findAll()).thenReturn(examStudents);
         
-        when(examStudentRepository.findAll()).thenReturn(resulted);
+        // dto
+        ProfessorDto professorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
+        StudentDto student1Dto = new StudentDto(1L, "1088","Esteban", "Castaño");
+        StudentDto student2Dto = new StudentDto(2L, "1089", "Carlos", "Villegas");
+        StudentDto student3Dto = new StudentDto(3L, "1090", "Sebastian", "Castrera");
         
-        ExamDto examDto = new ExamDto();
-        StudentDto studentDto = new StudentDto();
+        ExamDto examDto = new ExamDto(1L, "Exam name", "URL",0.1, "Exam description", 3600, professorDto);
+        ExamStudentDto examStudent1Dto = new ExamStudentDto(1L, 5.0, student1Dto, examDto);
+        ExamStudentDto examStudent2Dto = new ExamStudentDto(2L, 4.0, student2Dto, examDto);
+        ExamStudentDto examStudent3Dto = new ExamStudentDto(3L, 4.5, student3Dto, examDto);
+
+        List<ExamStudentDto> examStudentsDto = new ArrayList<>();
+        examStudentsDto.add(examStudent1Dto);
+        examStudentsDto.add(examStudent2Dto);
+        examStudentsDto.add(examStudent3Dto);
         
-        ArrayList<ExamStudentDto> exit = new ArrayList<>();
-        exit.add(new ExamStudentDto(1L, 0.0, null, 
-                studentDto, examDto));
-        exit.add(new ExamStudentDto(2L, 0.0, null, 
-                studentDto, examDto));
-        exit.add(new ExamStudentDto(3L, 0.0, null, 
-                studentDto, examDto));
         
-        ResponseEntity<?> expResult = new ResponseEntity<>(exit, HttpStatus.OK);
-        ResponseEntity<?> result = null;
+        ResponseEntity<?> response = null;
         try {
-            result = examStudentController.listAll();
+            response = ExamStudentController.listAll();
+        } catch (Exception e) {
         }
-        catch(Exception e) {}
-        
-        List<ExamStudentDto> BodyfromExpResult = (List<ExamStudentDto>) expResult.getBody();
-        List<ExamStudentDto> BodyfromResult = (List<ExamStudentDto>) result.getBody();
-        
-        assertEquals(result.getHeaders(), expResult.getHeaders());
-        for (int i=0; i < BodyfromExpResult.size(); i++) {
-            assertEquals(BodyfromExpResult.get(i).getId(), 
-                    BodyfromResult.get(i).getId());
-            assertEquals(BodyfromExpResult.get(i).getDefinitiveGrade(), 
-                    BodyfromResult.get(i).getDefinitiveGrade());
-        }
-        
+
+        ResponseEntity<?> expResult = new ResponseEntity<>(examStudentsDto, HttpStatus.OK);
+
+        assertEquals(expResult.getHeaders(), response.getHeaders());
+        List<ExamStudentDto> bodyFromResponse = (List<ExamStudentDto>) response.getBody();
+        List<ExamStudentDto> bodyFromExpResult = (List<ExamStudentDto>) expResult.getBody();
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
     }
-*/
 }
