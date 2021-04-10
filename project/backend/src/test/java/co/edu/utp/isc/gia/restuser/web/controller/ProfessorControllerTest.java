@@ -39,15 +39,13 @@ public class ProfessorControllerTest {
 
     private ProfessorRepository professorRepository;
     private ProfessorController professorController;
-    private ProfessorValidator professorValidator;
 
     @Before
     public void init() {
         professorRepository = Mockito.mock(ProfessorRepository.class);
         ModelMapper modelMapper = new ModelMapper();
-        professorValidator = new ProfessorValidator(null, "");
         ProfessorService professorService = new ProfessorService(professorRepository,
-                modelMapper, professorValidator);
+                modelMapper, new ProfessorValidator());
         professorController = new ProfessorController(professorService);
     }
 
@@ -445,14 +443,6 @@ public class ProfessorControllerTest {
 
         ProfessorDto bodyFromResponse = (ProfessorDto) response.getBody();
         ProfessorDto bodyFromExpResult = (ProfessorDto) expResult.getBody();
-
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getIdentificationCard(), bodyFromExpResult.getIdentificationCard());
-        assertEquals(bodyFromResponse.getName(), bodyFromExpResult.getName());
-        assertEquals(bodyFromResponse.getLastname(), bodyFromExpResult.getLastname());
-        assertEquals(bodyFromResponse.getEmail(), bodyFromExpResult.getEmail());
-        assertEquals(bodyFromResponse.getUsername(), bodyFromExpResult.getUsername());
-        assertEquals(bodyFromResponse.getPassword(), bodyFromExpResult.getPassword());
-
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
     }
 }
