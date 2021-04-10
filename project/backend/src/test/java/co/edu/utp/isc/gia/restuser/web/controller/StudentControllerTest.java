@@ -23,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import co.edu.utp.isc.gia.examsapp.data.repository.StudentRepository;
 import co.edu.utp.isc.gia.examsapp.validators.StudentValidator;
+import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
+import static org.mockito.Mockito.verify;
 
 /**
  *
@@ -35,542 +37,350 @@ public class StudentControllerTest {
 
     private StudentRepository studentRepository; 
     private StudentController studentController;
-    private StudentValidator studentValidator;
-/*    
+
     @Before
     public void init() {
         studentRepository = Mockito.mock(StudentRepository.class);
         ModelMapper modelMapper = new ModelMapper();
-        studentValidator = new StudentValidator();
         StudentService studentService = new StudentService(studentRepository, 
-                modelMapper, studentValidator);
+                modelMapper, new StudentValidator());
         studentController = new StudentController(studentService);
     }
-    */
+    
     /**
      * Test of save method, of class StudentController.
      */
-    /*
-   @Test
+    
+    @Test
     public void testSaveStudentNullObject() {
-                ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student object is null", 
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>("Student object is null\n",
                         HttpStatus.BAD_REQUEST);
-        
-        StudentDto student = null;
-        
+
+        StudentDto studentDto = null;
+
         try {
-            response = this.studentController.save(student);
+            response = studentController.save(studentDto);
+        } catch (Exception e) {
         }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
+
+        assertEquals(expResult, response);
     }
 
     @Test
-    public void testSaveStudentNullIdentificationCard() {
-        StudentDto student = new StudentDto(null, null, "Juan carlos", 
-                "Gomez",   null);
-        
+    public void testSaveStudentNullProperties() {
+        StudentDto studentDto = new StudentDto(null, null, null, null);
+
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's identification card is null", 
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "Student's identification card is null\n"
+                        + "Student's name is null\n"
+                        + "Student's lastname is null\n",
                         HttpStatus.BAD_REQUEST);
-        
+
         try {
-            response = this.studentController.save(student);
+            response = this.studentController.save(studentDto);
+        } catch (Exception e) {
         }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-        
+
+        assertEquals(expResult, response);
+
     }
 
     @Test
-    public void testSaveStudentNullName() {
-        StudentDto student = new StudentDto(null, "11", null, 
-                "Gomez",   null);
-        
+    public void testSaveStudentEmptyProperties() {
+        StudentDto studentDto = new StudentDto(1L, "", "", "");
+
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's name is null", 
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "Student's identification card is empty\n"
+                        + "Student's name is empty\n"
+                        + "Student's lastname is empty\n",
                         HttpStatus.BAD_REQUEST);
-        
         try {
-            response = this.studentController.save(student);
+            response = this.studentController.save(studentDto);
+        } catch (Exception e) {
         }
-        catch(Exception e) {
+
+        assertEquals(expResult, response);
+    }
+
+    @Test
+    public void testSaveStudentInvalidPropertiesCard() {
+
+        StudentDto studentDto = new StudentDto(0L, "number", "Esteban", "Castano");
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "Student's identification card is invalid\n",
+                        HttpStatus.BAD_REQUEST);
+
+        try {
+            response = this.studentController.save(studentDto);
+        } catch (Exception e) {
         }
-        
-        assertEquals(response, expResult);
+
+        assertEquals(expResult, response);
     }
     
     @Test
-    public void testSaveStudentNullLastname() {
-        StudentDto student = new StudentDto(null, "11", "Juan Carlos", 
-                null,   null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's lastname is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.save(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    } 
+    public void testSaveStudentValidInfo() {
+        Student student = new Student(1L, "10088", "Esteban", "Castaño", null);
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
+        StudentDto inputStudentDto = new StudentDto(1L, "10088", "Esteban", "Castaño");
+        StudentDto outputStudentDto = new StudentDto(1L, "10088", "Esteban", "Castaño");
 
-    @Test
-    public void testSaveStudentEmptyIdentificationCard() {
-        StudentDto student = new StudentDto(null, "", "Juan carlos", 
-                "Gomez",   null);
-        
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's identification card is empty", 
-                        HttpStatus.BAD_REQUEST);
-        
+        ResponseEntity<?> expResult = new ResponseEntity<>(outputStudentDto, HttpStatus.OK);
         try {
-            response = this.studentController.save(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
+            response = studentController.save(inputStudentDto);
 
-    @Test
-    public void testSaveStudentEmptyName() {
-        StudentDto student = new StudentDto(null, "11", "" ,"Gomez", 
-                null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's name is empty", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.save(student);
+        } catch (Exception e) {
         }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-    
-    @Test
-    public void testSaveStudentEmptyLastname() {
-        StudentDto student = new StudentDto(null, "11", "Juan Carlos", "" ,
-                   null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's lastname is empty", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.save(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-    
-    @Test
-    public void testSaveStudentInvalidIdentificationCard() {
-        StudentDto student = new StudentDto(null, "idcard", "Juan Carlos", 
-                "Gomez", null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's identification card is not a number", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.save(student);
-        }
-        catch(Exception e) {
-        }
-        //
-        assertEquals(response, expResult);
-    }        
-    
-    @Test
-    public void testSave() {
-        Student resulted = new Student(null,"11","Juan carlos", "Gomez",  null);
 
-        when(studentRepository.save(any(Student.class))).thenReturn(resulted);
-        
-        StudentDto student = new StudentDto(null,"11","Juan carlos", "Gomez", null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = new ResponseEntity<>(student, HttpStatus.OK);
-        try {
-            response = studentController.save(student);
-            
-        }
-        catch(Exception e) { }
-        
         assertEquals(response.getHeaders(), expResult.getHeaders());
 
         StudentDto bodyFromResponse = (StudentDto) response.getBody();
         StudentDto bodyFromExpResult = (StudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getIdentificationCard(), bodyFromExpResult.getIdentificationCard());
-        assertEquals(bodyFromResponse.getName(), bodyFromExpResult.getName());
-        assertEquals(bodyFromResponse.getLastname(), bodyFromExpResult.getLastname());
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
     }
-
-*/    
-/* Update method test */    
-/*
-   @Test
-    public void testUpdateStudentNullObject() {
-                ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student object is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        StudentDto student = null;
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-
-    @Test
-    public void testUpdateStudentNullIdentificationCard() {
-        StudentDto student = new StudentDto(1L, null, "Juan carlos", 
-                "Gomez",   null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's identification card is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-        
-    }
-
-    @Test
-    public void testUpdateStudentNullName() {
-        StudentDto student = new StudentDto(1L, "11", null, 
-                "Gomez",   null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's name is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-    
-    @Test
-    public void testUpdateStudentNullLastname() {
-        StudentDto student = new StudentDto(1L, "11", "Juan Carlos", 
-                null,   null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's lastname is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-        
-    @Test
-    public void testUpdateStudentEmptyIdentificationCard() {
-        StudentDto student = new StudentDto(1L, "", "Juan carlos", "Gomez",
-                null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's identification card is empty", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-
-    @Test
-    public void testUpdateStudentEmptyName() {
-        StudentDto student = new StudentDto(1L, "11", "", "Gomez",null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's name is empty", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-    
-    @Test
-    public void testUpdateStudentEmptyLastname() {
-        StudentDto student = new StudentDto(1L, "11", "Juan Carlos", "",
-                   null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's lastname is empty", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-    
-    @Test
-    public void testUpdateStudentNullId() {
-        StudentDto student = new StudentDto(null, "idcard", "Juan Carlos", 
-                "Gomez", null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's id is null", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }      
-    
-    
-    @Test
-    public void testUpdateStudentInvalidIdentificationCard() {
-        StudentDto student = new StudentDto(1L, "idcard", "Juan Carlos", 
-                "Gomez", null);
-        
-        ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<>("Student's identification card is not a number", 
-                        HttpStatus.BAD_REQUEST);
-        
-        try {
-            response = this.studentController.update(student);
-        }
-        catch(Exception e) {
-        }
-        
-        assertEquals(response, expResult);
-    }
-*/
-    /**
-     * Test of update method, of class StudentController.
+     /*
+        Testing update method
      */
-/*
+    
+   
     @Test
-    public void testUpdate() {
-        Student resulted = new Student(1L,"11","Juan carlos", "Gomez",  null);
+    public void testUpdateProfessorNullObject() {
 
-        when(studentRepository.save(any(Student.class))).thenReturn(resulted);
-        
-        StudentDto student = new StudentDto(1L,"11","Juan carlos", "Gomez", null);
-        
         ResponseEntity<?> response = null;
-        ResponseEntity<?> expResult = new ResponseEntity<>(student, HttpStatus.OK);
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>("Student object is null\n",
+                        HttpStatus.BAD_REQUEST);
+
+        StudentDto studentDto = null;
+
         try {
-            response = studentController.update(student);
-            
+            response = studentController.update(studentDto);
+        } catch (Exception e) {
         }
-        catch(Exception e) { }
-        
+
+        assertEquals(expResult, response);
+    }
+
+    @Test
+    public void testUpdateStudentNullProperties() {
+        StudentDto studentDto = new StudentDto(null, null, null, null);
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "Student's id is null\n"
+                        + "Student's identification card is null\n"
+                        + "Student's name is null\n"
+                        + "Student's lastname is null\n",
+                        HttpStatus.BAD_REQUEST);
+
+        try {
+            response = this.studentController.update(studentDto);
+        } catch (Exception e) {
+        }
+
+        assertEquals(expResult, response);
+
+    }
+
+    @Test
+    public void testUpdateStudentEmptyProperties() {
+        StudentDto studentDto = new StudentDto(0L, "", "", "");
+
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "Student's id is invalid\n"
+                        + "Student's identification card is empty\n"
+                        + "Student's name is empty\n"
+                        + "Student's lastname is empty\n",
+                        HttpStatus.BAD_REQUEST);
+        try {
+            response = this.studentController.update(studentDto);
+        } catch (Exception e) {
+        }
+
+        assertEquals(expResult, response);
+    }
+
+    @Test
+    public void testUpdateStudentInvalidPropertiesIdCard() {
+
+        StudentDto studentDto = new StudentDto(0L, "number", "Esteban", "Castano");
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>(
+                        "Student's id is invalid\n"
+                        + "Student's identification card is invalid\n",
+                        HttpStatus.BAD_REQUEST);
+
+        try {
+            response = this.studentController.update(studentDto);
+        } catch (Exception e) {
+        }
+
+        assertEquals(expResult, response);
+    }
+
+    @Test
+    public void testUpdateStudentValidInfo() {
+        Student student = new Student(1L, "10088", "Esteban", "Castaño", null);
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
+        StudentDto inputStudentDto = new StudentDto(1L, "10088", "Esteban", "Castaño");
+        StudentDto outputStudentDto = new StudentDto(1L, "10088", "Esteban", "Castaño");
+        ResponseEntity<?> response = null;
+        ResponseEntity<?> expResult = new ResponseEntity<>(outputStudentDto, HttpStatus.OK);
+
+        try {
+            response = studentController.update(inputStudentDto);
+        } catch (Exception e) {
+        }
+
         assertEquals(response.getHeaders(), expResult.getHeaders());
 
         StudentDto bodyFromResponse = (StudentDto) response.getBody();
         StudentDto bodyFromExpResult = (StudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getIdentificationCard(), bodyFromExpResult.getIdentificationCard());
-        assertEquals(bodyFromResponse.getName(), bodyFromExpResult.getName());
-        assertEquals(bodyFromResponse.getLastname(), bodyFromExpResult.getLastname());
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
+
     }
 
+    /*
+     * Test for findOne method.
+     */
+    
+    
     @Test
     public void testFindOneNonExistentStudent() {
         when(studentRepository.findById(any(Long.class))).thenReturn(null);
         ResponseEntity<?> response = null;
         try {
             response = studentController.findOne(1L);
-        }
-        catch (Exception e) {}
-        
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<> ("Student doesn't exist", 
-                        HttpStatus.NOT_FOUND);
-        
+        } catch (Exception e) {}
+
+        ResponseEntity<?> expResult = new ResponseEntity<>(null,HttpStatus.OK);
+
         assertEquals(expResult, response);
 
     }
-    */
-    /**
-     * Test of findOne method, of class StudentController.
-     */
-/*
+
     @Test
     public void testFindOne() {
-        
-        Student resulted = new Student(1L,"11","Juan carlos", "Gomez",  null);
-        Optional<Student> op = Optional.of(resulted);
+
+        Student studentDto = new Student(1L, "10088", "Esteban", "Castano", null);
+        Optional<Student> op = Optional.of(studentDto);
         when(studentRepository.findById(any(Long.class))).thenReturn(op);
-        
+
         ResponseEntity<?> response = null;
         try {
             response = studentController.findOne(1L);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
-        
-        StudentDto user = new StudentDto(1L,"11","Juan carlos", "Gomez", null);
-        ResponseEntity<?> expResult = new ResponseEntity<>(user, HttpStatus.OK);
-        
+
+        StudentDto professorDtoOutput = new StudentDto(1L, "10088", "Esteban", "Castano");
+        ResponseEntity<?> expResult = new ResponseEntity<>(professorDtoOutput, HttpStatus.OK);
+
         assertEquals(expResult.getHeaders(), response.getHeaders());
-        
         StudentDto bodyFromResponse = (StudentDto) response.getBody();
         StudentDto bodyFromExpResult = (StudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getIdentificationCard(), bodyFromExpResult.getIdentificationCard());
-        assertEquals(bodyFromResponse.getName(), bodyFromExpResult.getName());
-        assertEquals(bodyFromResponse.getLastname(), bodyFromExpResult.getLastname());
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
     }
 
-
     @Test
-    public void testDeleteNonExistentStudent() {
-        when(studentRepository.findById(any(Long.class))).thenReturn(null);
+    public void testFindByIdentificationCardNoExistent() {
+        when(studentRepository.findByIdentificationCard(any(String.class))).thenReturn(null);
         ResponseEntity<?> response = null;
         try {
-            response = studentController.delete(1L);
-        }
-        catch (Exception e) {}
-        
-        ResponseEntity<?> expResult = 
-                new ResponseEntity<> ("Student doesn't exist", 
-                        HttpStatus.NOT_FOUND);
-        
+            response = studentController.findByIdentificationCard("1088");
+        } catch (Exception e) {}
+
+        ResponseEntity<?> expResult = new ResponseEntity<>(null,HttpStatus.OK);
+
         assertEquals(expResult, response);
+
     }
-*/
-    /**
-     * Test of delete method, of class StudentController.
-     */
-    /*
+    
     @Test
-    public void testDelete() {
-        
-        Student resulted = new Student(1L,"11","Juan carlos", "Gomez",  null);
-        Optional<Student> op = Optional.of(resulted);
-        when(studentRepository.findById(any(Long.class))).thenReturn(op);
-        
+    public void testFindByIdentificationCard() {
+
+        Student studentDto = new Student(1L, "10088", "Esteban", "Castano", null);
+        when(studentRepository.findByIdentificationCard(any(String.class))).thenReturn(studentDto);
+
+        ResponseEntity<?> response = null;
+        try {
+            response = studentController.findByIdentificationCard("1088");
+        } catch (Exception e) {
+        }
+
+        StudentDto professorDtoOutput = new StudentDto(1L, "10088", "Esteban", "Castano");
+        ResponseEntity<?> expResult = new ResponseEntity<>(professorDtoOutput, HttpStatus.OK);
+
+        assertEquals(expResult.getHeaders(), response.getHeaders());
+        StudentDto bodyFromResponse = (StudentDto) response.getBody();
+        StudentDto bodyFromExpResult = (StudentDto) expResult.getBody();
+        assertThat(bodyFromResponse, sameBeanAs(bodyFromExpResult));
+    }
+    /*
+     * Test for delete method
+     */
+    
+    @Test
+    public void testDeleteStudent() {
         ResponseEntity<?> response = null;
         try {
             response = studentController.delete(1L);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
-        
-        StudentDto student = new StudentDto(1L,"11","Juan carlos", "Gomez", null);
-        ResponseEntity<?> expResult = new ResponseEntity<>(student, HttpStatus.OK);
-        
-        assertEquals(expResult.getHeaders(), response.getHeaders());
-        
-        StudentDto bodyFromResponse = (StudentDto) response.getBody();
-        StudentDto bodyFromExpResult = (StudentDto) expResult.getBody();
-        
-        assertEquals(bodyFromResponse.getId(), bodyFromExpResult.getId());
-        assertEquals(bodyFromResponse.getIdentificationCard(), bodyFromExpResult.getIdentificationCard());
-        assertEquals(bodyFromResponse.getName(), bodyFromExpResult.getName());
-        assertEquals(bodyFromResponse.getLastname(), bodyFromExpResult.getLastname());
-        
+
+        ResponseEntity<?> expResult
+                = new ResponseEntity<>("Student deleted successfully",
+                        HttpStatus.OK);
+
+        assertEquals(expResult, response);
+        verify(studentRepository).deleteById(any(Long.class));
     }
-*/
-    /**
-     * Test of listAll method, of class StudentController.
-     */
+
     /*
+     * Test of listAll method, of class ProfessorController.
+     */
+    
     @Test
     public void testListAll() {
-        ArrayList<Student> resulted = new ArrayList<>();
-        
-        resulted.add(new Student(1L,"11","Juan carlos", "Gomez",  null));
-        resulted.add(new Student(2L,"12","Carlos mario", "Lopez",  null));
-        resulted.add(new Student(3L,"13","Natalia", "Castano", null));
-        
-        when(studentRepository.findAll()).thenReturn(resulted);
-        
-        ArrayList<StudentDto> exit = new ArrayList<>();
-        exit.add(new StudentDto(1L,"11","Juan carlos", "Gomez", null));
-        exit.add(new StudentDto(2L,"12","Carlos mario", "Lopez", null));
-        exit.add(new StudentDto(3L,"13","Natalia", "Castano", null));
-        
-        ResponseEntity<?> expResult = new ResponseEntity<>(exit, HttpStatus.OK);
+        ArrayList<Student> students = new ArrayList<>();
+
+        students.add(new Student(1L, "10088", "Esteban", "Castaño", null));
+        students.add(new Student(2L, "10089", "Felipe", "Perez", null));
+        students.add(new Student(3L, "10088", "Carlos", "Ramirez", null));
+
+        when(studentRepository.findAll()).thenReturn(students);
+
+        ArrayList<StudentDto> studentsDto = new ArrayList<>();
+        studentsDto.add(new StudentDto(1L, "10088", "Esteban", "Castaño"));
+        studentsDto.add(new StudentDto(2L, "10089", "Felipe", "Perez"));
+        studentsDto.add(new StudentDto(3L, "10088", "Carlos", "Ramirez"));
+
+        ResponseEntity<?> expResult = new ResponseEntity<>(studentsDto, HttpStatus.OK);
         ResponseEntity<?> result = null;
+
         try {
             result = studentController.listAll();
+        } catch (Exception e) {
         }
-        catch(Exception e) {}
-        
-        List<StudentDto> BodyfromExpResult = (List<StudentDto>) expResult.getBody();
-        List<StudentDto> BodyfromResult = (List<StudentDto>) result.getBody();
-        
+
         assertEquals(result.getHeaders(), expResult.getHeaders());
-        for (int i=0; i < BodyfromExpResult.size(); i++) {
-            assertEquals(BodyfromExpResult.get(i).getId(), 
-                    BodyfromResult.get(i).getId());
-            assertEquals(BodyfromExpResult.get(i).getName(), 
-                    BodyfromResult.get(i).getName());
-            assertEquals(BodyfromExpResult.get(i).getLastname(), 
-                    BodyfromResult.get(i).getLastname());
-        }
-        
+        List<StudentDto> bodyfromExpResult = (List<StudentDto>) expResult.getBody();
+        List<StudentDto> bodyfromResult = (List<StudentDto>) result.getBody();
+        assertThat(bodyfromResult, sameBeanAs(bodyfromExpResult));
     }
-*/
+
 }
