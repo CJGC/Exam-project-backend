@@ -6,13 +6,11 @@
 package co.edu.utp.isc.gia.restuser.web.controller;
 
 import co.edu.utp.isc.gia.examsapp.data.entity.Exam;
-import co.edu.utp.isc.gia.examsapp.data.entity.ExamStudent;
 import co.edu.utp.isc.gia.examsapp.data.entity.Professor;
 import co.edu.utp.isc.gia.examsapp.data.entity.Question;
 import co.edu.utp.isc.gia.examsapp.service.QuestionService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -28,16 +26,11 @@ import co.edu.utp.isc.gia.examsapp.web.controller.QuestionController;
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.OpenQuestionDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.ProfessorDto;
-import co.edu.utp.isc.gia.examsapp.web.dto.StudentDto;
 import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
-import java.io.File;
 import static org.mockito.Mockito.verify;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
-
 
 /*
  *
