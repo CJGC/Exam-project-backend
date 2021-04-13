@@ -5,7 +5,7 @@
  */
 package co.edu.utp.isc.gia.examsapp.web.controller;
 
-import co.edu.utp.isc.gia.examsapp.service.AnwerOptionService;
+import co.edu.utp.isc.gia.examsapp.service.AnswerOptionService;
 import co.edu.utp.isc.gia.examsapp.web.dto.AnswerOptionDto;
 import java.io.IOException;
 import java.util.List;
@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 public class AnswerOptionController {
 
-    private final AnwerOptionService answerOptionService;
+    private final AnswerOptionService answerOptionService;
 
-    AnswerOptionController(AnwerOptionService answerOptionService) {
+    public AnswerOptionController(AnswerOptionService answerOptionService) {
         this.answerOptionService = answerOptionService;
     }
 
