@@ -169,10 +169,15 @@ public class QuestionService {
     public List<OpenQuestionDto> findByExam(Long id) throws Exception {
         try {
             List<OpenQuestionDto> questionsDto = new ArrayList<>();
-            questionRepository.findByExamId(id).forEach( question -> {
-                questionsDto.add(modelMapper.map(question, OpenQuestionDto.class));
-            });
-            return questionsDto;
+            List<Question> questions = questionRepository.findByExamId(id);
+            if (questions != null) {
+                questions.forEach( question -> {
+                    questionsDto.add(modelMapper.map(question, OpenQuestionDto.class));
+                });
+                return questionsDto;
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
