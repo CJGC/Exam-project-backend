@@ -148,7 +148,7 @@ public class ExamStudentService {
     public String delete(Long id) throws Exception {
         try {
             examStudentRepository.deleteById(id);
-            return "ExamStudent deleted sucessfully";
+            return "ExamStudent deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
