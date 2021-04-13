@@ -35,7 +35,7 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    QuestionController(QuestionService questionService) {
+    public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
 
@@ -82,9 +82,9 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/getImage", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<?> uploadImage(@RequestParam("imgRoute") String examId) throws Exception {
+    public ResponseEntity<?> uploadImage(@RequestParam("filename") String filename) throws Exception {
         try {
-            byte[] image = questionService.uploadImage(examId);
+            byte[] image = questionService.uploadImage(filename);
             return new ResponseEntity<>(image, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
