@@ -23,5 +23,5 @@ public class AnswerOptionDto implements Serializable {
     private String description;
     private Boolean correctAnswer;
     private Double weight;
-    private OpenQuestionDto question;
+    private MultiQuestionDto question;
 }
