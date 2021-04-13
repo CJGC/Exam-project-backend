@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import co.edu.utp.isc.gia.examsapp.data.repository.StudentRepository;
 import co.edu.utp.isc.gia.examsapp.validators.StudentValidator;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  *
@@ -76,9 +77,9 @@ public class StudentService {
     public StudentDto findOne(Long id) throws Exception {
         try {
             
-            Student student = studentRepository.findById(id).get();
-            if (student != null) {
-                return modelMapper.map(student, StudentDto.class);                
+            Optional<Student> optionalStudent = studentRepository.findById(id);
+            if (optionalStudent != null) {
+                return modelMapper.map(optionalStudent.get(), StudentDto.class);                
             } else {
                 return null;
             }
