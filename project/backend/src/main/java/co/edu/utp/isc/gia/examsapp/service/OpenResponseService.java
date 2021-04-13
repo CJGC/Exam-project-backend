@@ -137,7 +137,7 @@ public class OpenResponseService {
         
         try {
             openResponseRepository.deleteById(id);
-            return "Open response deleted successfully";
+            return "OpenResponse deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
