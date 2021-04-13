@@ -8,6 +8,7 @@ package co.edu.utp.isc.gia.examsapp.web.dto;
 import co.edu.utp.isc.gia.examsapp.web.dto.abstractdto.QuestionDto;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -16,6 +17,7 @@ import lombok.experimental.SuperBuilder;
  * @author CJ
  */
 
+@NoArgsConstructor
 @Setter  @Getter
 @SuperBuilder
 public class UniqueQuestionDto extends QuestionDto {
