@@ -36,12 +36,20 @@ public class ExamStudentValidator {
     public void validateId() throws Exception {
         if (this.examStudent.getId() == null) {
             exceptions += "ExamStudent id is null\n";
+            return;
+        }
+        if (this.examStudent.getId() <= 0) {
+            exceptions += "ExamStudent id is invalid\n";
         }
     }
 
     public void validateDefinitiveGrade() throws Exception {
         if (this.examStudent.getDefinitiveGrade() == null) {
             exceptions += "ExamStudent definitive grade is null\n";
+            return;
+        }
+        if (this.examStudent.getDefinitiveGrade() <= 0) {
+            exceptions += "ExamStudent definitive grade is invalid\n";
         }
     }
 

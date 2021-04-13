@@ -6,6 +6,7 @@
 package co.edu.utp.isc.gia.examsapp.validators;
 
 import co.edu.utp.isc.gia.examsapp.web.dto.OpenQuestionDto;
+import co.edu.utp.isc.gia.examsapp.web.dto.abstractdto.QuestionDto;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ import lombok.Setter;
 @Getter
 public class QuestionValidator {
 
-    private OpenQuestionDto question;
+    private QuestionDto question;
     private String exceptions = "";
     private ExamValidator examValidator;
 
@@ -36,6 +37,11 @@ public class QuestionValidator {
     public void validateId() throws Exception {
         if (this.question.getId() == null) {
             exceptions += "Question id is null\n";
+            return;
+        }
+        
+        if (this.question.getId() <= 0) {
+            exceptions += "Question id is invalid\n";            
         }
     }
 
@@ -44,24 +50,42 @@ public class QuestionValidator {
             exceptions += "Question type is null\n";
             return;
         }
+        
         if (Pattern.matches("", this.question.getType())) {
-            throw new Exception("Question questionType is empty\n");
+            exceptions += "Question type is empty\n";
+            return;
+        }
+        
+        if (!Pattern.matches("op|mu|mm", this.question.getType())) {
+            exceptions += "Question type is invalid\n";
         }
     }
 
-    public void validateDescription() throws Exception {
-        if (this.question.getDescription() == null) {
-            exceptions += "question description is null\n";
+    public void validateWeight() throws Exception {
+        if (this.question.getId() == null) {
+            exceptions += "Question weight is null\n";
             return;
         }
+ 
+        if (this.question.getId() <= 0) {
+            exceptions += "Question weight is invalid\n";
+        }
+    }
+    
+    public void validateDescription() throws Exception {
+        if (this.question.getDescription() == null) {
+            exceptions += "Question description is null\n";
+            return;
+        }
+        
         if (Pattern.matches("", this.question.getDescription())) {
-            throw new Exception("question description is empty\n");
+            exceptions += "Question description is empty\n";
         }
     }
 
     public void validateExam() throws Exception {
         if (this.question.getExam() == null) {
-            exceptions += "question exam is null\n";
+            exceptions += "Question exam is null\n";
             return;
         }
         
@@ -75,6 +99,12 @@ public class QuestionValidator {
         }
     }
 
+    public void validateQuestionImage() throws Exception {
+        if (this.question.getQuestionImage() == null) {
+            exceptions += "Question image is null\n";
+        }
+    }
+    
     public void performValidationsExcept(String attribute) throws Exception {
         this.isNull();
         if (!attribute.equals("id")) {
@@ -83,8 +113,14 @@ public class QuestionValidator {
         if (!attribute.equals("questiontype")) {
             this.validateQuestionType();
         }
+        if (!attribute.equals("weight")) {
+            this.validateWeight();
+        }
         if (!attribute.equals("description")) {
             this.validateDescription();
+        }
+        if (!attribute.equals("questionImage")) {
+            this.validateQuestionImage();
         }
         if (!attribute.equals("exam")) {
             this.validateExam();
@@ -95,7 +131,9 @@ public class QuestionValidator {
         this.isNull();
         this.validateId();
         this.validateQuestionType();
+        this.validateWeight();
         this.validateDescription();
+        this.validateQuestionImage();
         this.validateExam();
     }
 }

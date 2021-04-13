@@ -70,7 +70,7 @@ public class ExamValidator {
             return;
         }
 
-        if (this.exam.getMaxGrade() < 0) {
+        if (this.exam.getMaxGrade() <= 0) {
             exceptions += "Exam maxgrade is invalid\n";
         }
     }
@@ -91,7 +91,7 @@ public class ExamValidator {
             return;
         }
 
-        if (this.exam.getDurability() < 0) {
+        if (this.exam.getDurability() <= 0) {
             exceptions += "Exam durability is invalid\n";
         }
     }

@@ -36,6 +36,11 @@ public class AnswerOptionValidator {
     public void validateId() throws Exception {
         if (this.answerOption.getId() == null) {
             exceptions += "AnswerOption id is null\n";
+            return;
+        }
+        
+        if (this.answerOption.getId() <= 0) {
+            exceptions += "AnswerOption id is invalid\n";
         }
     }
 
@@ -58,6 +63,11 @@ public class AnswerOptionValidator {
     public void validateWeight() throws Exception {
         if (this.answerOption.getWeight() == null) {
             exceptions += "AnswerOption weight is null\n";
+            return;
+        }
+        
+        if (this.answerOption.getWeight() <= 0) {
+            exceptions += "AnswerOption weight is invalid\n";
         }
     }
 
@@ -97,6 +107,7 @@ public class AnswerOptionValidator {
     }
 
     public void performValidations() throws Exception {
+        this.isNull();
         this.validateId();
         this.validateDescription();
         this.validateCorrectAnswer();

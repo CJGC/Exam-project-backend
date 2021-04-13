@@ -36,18 +36,26 @@ public class SelectedResponseValidator {
     public void validateId() throws Exception {
         if (this.selectedResponse.getId() == null) {
             exceptions += "SelectedResponse id is null\n";
+            return;
+        }
+        if (this.selectedResponse.getId() <= 0) {
+            exceptions += "SelectedResponse id is invalid\n";
         }
     }
 
     public void validateValoration() throws Exception {
         if (this.selectedResponse.getValoration() == null) {
             exceptions += "SelectedResponse valoration is null\n";
+            return;
+        }
+        if (this.selectedResponse.getValoration() <= 0) {
+            exceptions += "SelectedResponse valoration is invalid\n";
         }
     }
 
     public void validateExamStudent() throws Exception {
         if (this.selectedResponse.getExamStudent() == null) {
-            exceptions += "SelectedResponse examenStudent is null\n";
+            exceptions += "SelectedResponse examStudent is null\n";
             return;
         }
         
@@ -82,9 +90,6 @@ public class SelectedResponseValidator {
         if (!attribute.equals("id")) {
             this.validateId();
         }
-        if (!attribute.equals("answerOption")) {
-            this.validateAnswerOption();
-        }
         if (!attribute.equals("valoration")) {
             this.validateValoration();
         }
@@ -101,7 +106,6 @@ public class SelectedResponseValidator {
         this.validateId();
         this.validateValoration();
         this.validateExamStudent();
-        this.validateAnswerOption();
         this.validateAnswerOption();
     }
 }

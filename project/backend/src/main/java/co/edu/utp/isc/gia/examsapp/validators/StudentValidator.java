@@ -35,6 +35,11 @@ public class StudentValidator {
     public void validateId() throws Exception {
         if (this.student.getId() == null) {
             exceptions += "Student's id is null\n";
+            return;
+        }
+        
+        if (this.student.getId() <= 0) {
+            exceptions += "Student's id is invalid\n";
         }
     }
 

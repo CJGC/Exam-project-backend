@@ -37,6 +37,10 @@ public class OpenResponseValidator {
     public void validateId() throws Exception {
         if (this.openResponse.getId() == null) {
             exceptions += "OpenResponse id is null\n";
+            return;
+        }
+        if (this.openResponse.getId() <= 0) {
+            exceptions += "OpenResponse id is invalid\n";
         }
     }
 
@@ -53,12 +57,16 @@ public class OpenResponseValidator {
     public void validateValoration() throws Exception {
         if (this.openResponse.getValoration() == null) {
             exceptions += "OpenResponse valoration is null\n";
+            return;
+        }
+        if (this.openResponse.getValoration() <= 0 ) {
+            exceptions += "OpenResponse valoration is invalid\n";
         }
     }
 
     public void validateExamStudent() throws Exception {
         if (this.openResponse.getExamStudent() == null) {
-            exceptions += "OpenResponse examen student is null\n";
+            exceptions += "OpenResponse examStudent is null\n";
             return;
         }
         
