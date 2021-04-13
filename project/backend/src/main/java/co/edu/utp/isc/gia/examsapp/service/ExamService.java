@@ -114,8 +114,8 @@ public class ExamService {
                 throw new IOException(examExceptions);
             }
                     
-            Exam exam = examRepository.save(modelMapper.map(examDto, 
-                    Exam.class));
+            Exam exam = modelMapper.map(examDto, Exam.class);
+            exam = examRepository.save(exam);
             
             if (exam != null) {
                 return modelMapper.map(exam, ExamDto.class);                
