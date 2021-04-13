@@ -39,8 +39,8 @@ public class SelectedResponseService {
     public SelectedResponseDto save(SelectedResponseDto selectedResponseDto) throws Exception {        
         try {
             this.selectedResponseValidator.setSelectedResponse(selectedResponseDto);
-            this.selectedResponseValidator.performValidationsExcept("id");
             this.selectedResponseValidator.setExceptions("");
+            this.selectedResponseValidator.performValidationsExcept("id");
             String selectedResponseExceptions = this.selectedResponseValidator.getExceptions();
             
             if (selectedResponseExceptions.length() > 0) {
@@ -139,7 +139,7 @@ public class SelectedResponseService {
     public String delete(Long id) throws Exception {
         try {
             selectedResponseRepository.deleteById(id);
-            return "Selected response deleted successfully";
+            return "SelectedResponse deleted successfully";
         }
         catch(Exception e){
             System.out.println(e.getMessage());
