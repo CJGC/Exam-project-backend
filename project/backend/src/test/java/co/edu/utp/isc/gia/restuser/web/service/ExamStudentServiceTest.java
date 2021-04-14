@@ -5,7 +5,6 @@
  */
 package co.edu.utp.isc.gia.restuser.web.service;
 
-import co.edu.utp.isc.gia.restuser.web.controller.*;
 import co.edu.utp.isc.gia.examsapp.data.entity.Exam;
 import co.edu.utp.isc.gia.examsapp.data.entity.ExamStudent;
 import co.edu.utp.isc.gia.examsapp.data.entity.Professor;
@@ -22,11 +21,8 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import co.edu.utp.isc.gia.examsapp.data.repository.ExamStudentRepository;
 import co.edu.utp.isc.gia.examsapp.validators.ExamStudentValidator;
-import co.edu.utp.isc.gia.examsapp.web.controller.ExamStudentController;
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.ProfessorDto;
 import co.edu.utp.isc.gia.examsapp.web.dto.StudentDto;
@@ -176,8 +172,6 @@ public class ExamStudentServiceTest {
     public void testSaveAnswerOptionNullAsResponse() {
 
         when(ExamStudentRepository.save(any(ExamStudent.class))).thenReturn(null);
-        ProfessorDto professorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez",
-                "juant@me.co", "Janco27", "password");
 
         ProfessorDto inputProfessorDto = new ProfessorDto(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "password");
         StudentDto inputStudentDto = new StudentDto(1L, "1088","Esteban", "Castaño");
