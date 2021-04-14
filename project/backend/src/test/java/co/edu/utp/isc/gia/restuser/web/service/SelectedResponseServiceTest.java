@@ -24,8 +24,6 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import co.edu.utp.isc.gia.examsapp.data.repository.SelectedResponseRepository;
 import co.edu.utp.isc.gia.examsapp.validators.SelectedResponseValidator;
 import co.edu.utp.isc.gia.examsapp.web.dto.ExamDto;
