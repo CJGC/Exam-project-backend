@@ -17,7 +17,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import co.edu.utp.isc.gia.examsapp.data.repository.AnswerOptionRepository;
 import co.edu.utp.isc.gia.examsapp.validators.AnswerOptionValidator;
 import co.edu.utp.isc.gia.examsapp.web.dto.AnswerOptionDto;
@@ -551,7 +550,7 @@ public class AnswerOptionServiceTest {
         
         List<AnswerOptionDto> expResult = answerOptionsDto;
         
-        List<AnswerOptionDto> response = null;
+        List<AnswerOptionDto> response;
         try {
             response = answerOptionService.listAll();
             assertThat(response, sameBeanAs(expResult));
