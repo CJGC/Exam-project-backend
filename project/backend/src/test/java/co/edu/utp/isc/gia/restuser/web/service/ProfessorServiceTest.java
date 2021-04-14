@@ -136,6 +136,20 @@ public class ProfessorServiceTest {
     }
 
     @Test
+    public void testSaveProfessorNullAsResponse() {
+
+        when(professorRepository.save(any(Professor.class))).thenReturn(null);
+        ProfessorDto inputProfessorDto = new ProfessorDto(null, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "Juanavid");
+
+        ProfessorDto response;
+        ProfessorDto expResult = null;
+        try {
+            response = professorService.save(inputProfessorDto);
+            assertThat(response, sameBeanAs(expResult));
+        } catch (Exception e) {}
+    }
+    
+    @Test
     public void testSaveProfessorValidInfo() {
         Professor savedProfessor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "Juanavid", null);
         when(professorRepository.save(any(Professor.class))).thenReturn(savedProfessor);
@@ -243,6 +257,20 @@ public class ProfessorServiceTest {
         }
     }
 
+    @Test
+    public void testUpdateProfessorNullAsResponse() {
+
+        when(professorRepository.save(any(Professor.class))).thenReturn(null);
+        ProfessorDto inputProfessorDto = new ProfessorDto(null, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "Juanavid");
+
+        ProfessorDto response;
+        ProfessorDto expResult = null;
+        try {
+            response = professorService.update(inputProfessorDto);
+            assertThat(response, sameBeanAs(expResult));
+        } catch (Exception e) {}
+    }
+    
     @Test
     public void testUpdateProfessorValidInfo() {
         Professor savedProfessor = new Professor(1L, "11", "Juan carlos", "Gomez", "juant@me.co", "Janco27", "Juanavid", null);
